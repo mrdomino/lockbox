@@ -67,7 +67,8 @@ Ssss = function(msg, k, n, entropy) {
 }
 
 /**
- * Return the first n values of the polynomial sum_i(cs[i] * x ** i) at x.
+ * Return the first n values of the polynomial sum_i(cs[i] * x ** i) at x over
+ * GF(2^8).
  * @param {Int8Array} cs Coefficients of the polynomial.
  * @param {number} x Value to evaluate.
  * @return {Int8Array} First n values of the polynomial (starting at 1).
@@ -75,12 +76,18 @@ Ssss = function(msg, k, n, entropy) {
 firstNValues = function(cs, n) {
   var ret = new Int8Array(n)
   var l = cs.length
-  for (var i = 0; i < n; ++i) {
-    var x = 0;
+
+  for (var i = 1; i <= n; ++i) {
+    var sum = 0
     for (var j = 0; j < l; ++j) {
-      x += cs[j] * Math.pow(i + 1, j)
+      //sum += cs[j] * Math.pow(i + 1, j)
+      var x = 1
+      for (var k = 0; k < j; ++k) {
+        x = gf_2_8_multiply(x, i)
+      }
+      sum ^= gf_2_8_multiply(cs[j], x)
     }
-    ret[i] = x
+    ret[i] = sum
   }
   return ret
 }
