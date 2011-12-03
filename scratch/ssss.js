@@ -28,6 +28,7 @@
 Ssss = function(msg, k, n, entropy) {
   if (n < 1) throw "n must be a postive integer."
   if (k >= n) throw "k must be less than n."
+  if (n > 255) throw "n can't be larger than 255."
   if (entropy.length != msg.length * (k - 1))
     throw "Need (k - 1) * msg.length bits of entropy."
 
