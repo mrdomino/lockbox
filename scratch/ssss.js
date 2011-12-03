@@ -99,7 +99,7 @@ gf_2_8_multiply = function(a, b) {
       p ^= a
     }
     var a_l = a & 0x80
-    a <<= 1
+    a = (a << 1) & 0xff
     if (a_l) {
       a ^= 0x1b
     }
