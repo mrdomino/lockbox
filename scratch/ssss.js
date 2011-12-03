@@ -1,4 +1,4 @@
-/*
+/**
  * @fileoverview
  * This file implements Shamir's Secret Sharing Scheme (SSSS) in JavaScript.
  * Given an $m$-byte message $y$, $n$, $k < n$, and $8m(k-1)$ bits of entropy,
