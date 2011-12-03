@@ -100,12 +100,3 @@ gf_2_8_multiply = function(a, b) {
   }
   return p
 }
-
-var hidden = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-var msg = new Int8Array(hidden.length)
-for (var i = 0; i < msg.length; ++i) { msg[i] = hidden.charCodeAt(i) }
-var k = 3
-var n = 7
-var entropy = new Int8Array(msg.length * (k - 1))
-for (var i = 0; i < entropy.length; ++i) { entropy[i] = Math.floor(Math.random() * 256) }
-var result = Ssss(msg, k, n, entropy)
