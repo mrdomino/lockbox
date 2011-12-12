@@ -167,9 +167,10 @@ gf28.pow = function(x, n) {
  * @private
  */
 gf28.checkArgs_ = function(args) {
-  goog.array.forEach(args, function(x) {
-    goog.asserts.assert(gf28.isElem(x));
-  });
+  var l = args.length;
+  for (var i = 0; i < l; ++i) {
+    goog.asserts.assert(gf28.isElem(args[i]));
+  }
 }
 
 /**
