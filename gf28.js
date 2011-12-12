@@ -70,7 +70,7 @@ gf28.MASK = (1 << 8) - 1;
 
 /**
  * Determines whether a value is a valid element in GF(2^8).
- * @param {*} x Element to check
+ * @param {number} x Element to check
  * @return {boolean} true iff x \in GF(2^8)
  */
 gf28.isElem = function(x) {
