@@ -1,0 +1,72 @@
+<!doctype html>
+<title>gf28 performance tests</title>
+<script src="../closure-library/closure/goog/base.js"></script>
+<script src="deps.js"></script>
+<script>
+  goog.require('gf28');
+  goog.require('goog.testing.PerformanceTable');
+  goog.require('goog.testing.PseudoRandom');
+  goog.require('goog.testing.jsunit');
+</script>
+<div id="p"></div>
+<script>
+
+var table = new goog.testing.PerformanceTable(goog.dom.getElement('p'));
+
+var NUM_MULTIPLIES = 100000;
+
+var NUM_POWS = 10000;
+
+var NUM_ADDS = 100000;
+
+function testMultiply() {
+  var inputs = new Uint8Array(NUM_MULTIPLIES * 2);
+  var output = new Uint8Array(NUM_MULTIPLIES);
+  var randomMock = new goog.testing.PseudoRandom(0, true);
+  for (var i = 0; i < NUM_MULTIPLIES; ++i) {
+    inputs[i] = Math.floor(Math.random() * 256);
+    inputs[NUM_MULTIPLIES + i] = Math.floor(Math.random() * 256);
+  }
+  randomMock.uninstall();
+
+  table.run(function() {
+    for (var i = 0; i < NUM_MULTIPLIES; ++i) {
+      output[i] = gf28.mul(inputs[i], inputs[NUM_MULTIPLIES + i]);
+    }
+  }, NUM_MULTIPLIES + ' multiplications');
+}
+
+function testPow() {
+  var inputs = new Uint8Array(NUM_POWS * 2);
+  var output = new Uint8Array(NUM_POWS);
+  var randomMock = new goog.testing.PseudoRandom(0, true);
+  for (var i = 0; i < NUM_POWS; ++i) {
+    inputs[i] = Math.floor(Math.random() * 256);
+    inputs[NUM_POWS + i] = Math.floor(Math.random() * 256);
+  }
+  randomMock.uninstall();
+
+  table.run(function() {
+    for (var i = 0; i < NUM_POWS; ++i) {
+      output[i] = gf28.pow(inputs[i], inputs[NUM_POWS + i]);
+    }
+  }, NUM_POWS + ' exponentiations');
+}
+
+function testAdd() {
+  var inputs = new Uint8Array(NUM_ADDS * 2);
+  var output = new Uint8Array(NUM_ADDS);
+  var randomMock = new goog.testing.PseudoRandom(0, true);
+  for (var i = 0; i < NUM_ADDS; ++i) {
+    inputs[i] = Math.floor(Math.random() * 256);
+    inputs[NUM_ADDS + i] = Math.floor(Math.random() * 256);
+  }
+  randomMock.uninstall();
+
+  table.run(function() {
+    for (var i = 0; i < NUM_ADDS; ++i) {
+      output[i] = gf28.add(inputs[i], inputs[NUM_ADDS + i]);
+    }
+  }, NUM_ADDS + ' adds');
+}
+</script>
