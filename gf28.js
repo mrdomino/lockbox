@@ -126,9 +126,6 @@ gf28.inv = function(x) {
   gf28.checkArgs_(arguments);
   goog.asserts.assert(x > 0);
   gf28.init_();
-  if (x == 0) {
-    return 0;
-  }
   return gf28.exp_[gf28.MASK - gf28.log_[x]];
 }
 
