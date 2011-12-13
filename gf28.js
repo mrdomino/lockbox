@@ -186,6 +186,8 @@ gf28.exp_ = null;
 gf28.init_ = function() {
   if (!gf28.exp_) {
     gf28.log_ = new Uint8Array(gf28.SIZE);
+    // We pay 510 bytes in memory usage to reduce branchiness in lookup
+    // operations.
     gf28.exp_ = new Uint8Array(gf28.MASK * 3);
 
     for (var i = 0; i < gf28.SIZE; ++i) {
