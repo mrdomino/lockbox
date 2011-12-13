@@ -51,7 +51,7 @@ gf28.SIZE = 1 << 8;
  * @type {number}
  * @private
  */
-gf28.PRIM_POLY = 0435;
+gf28.PRIM_POLY = (1 << 8) | (1 << 4) | (1 << 3) | (1 << 2) | (1 << 0);
 
 /**
  * With PRIM_POLY, generates the field.
