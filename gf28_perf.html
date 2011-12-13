@@ -16,47 +16,51 @@ gf28.mul(1, 1);
 
 var table = new goog.testing.PerformanceTable(goog.dom.getElement('p'));
 
-var NUM_MULTIPLIES = 10000000;
-
-var NUM_POWS = 1000000;
-
-var NUM_ADDS = 10000000;
+var NUM_OPS = {
+  'mul': 10000000,
+  'div': 10000000,
+  'inv': 10000000,
+  'pow': 1000000,
+  'add': 10000000,
+}
+var MAX_OPS = NUM_OPS['add'];
 
 var inputs, outputs;
 
 (function() {
-  var nInputs = Math.max(NUM_MULTIPLIES, NUM_POWS, NUM_ADDS);
-  inputs = new Uint8Array(nInputs * 2);
-  outputs = new Uint8Array(nInputs);
+  inputs = new Uint8Array(MAX_OPS * 2);
+  outputs = new Uint8Array(MAX_OPS);
   var randomMock = new goog.testing.PseudoRandom(0, true);
-  for (var i = 0; i < nInputs; ++i) {
+  for (var i = 0; i < MAX_OPS; ++i) {
     inputs[i] = Math.floor(Math.random() * 256);
-    inputs[nInputs + i] = Math.floor(Math.random() * 256);
+    inputs[MAX_OPS + i] = Math.floor(Math.random() * 256);
   }
   randomMock.uninstall();
 })();
 
-function testMultiply() {
+function runBinOp(opStr) {
+  var op = gf28[opStr];
+  var n = NUM_OPS[opStr];
   table.run(function() {
-    for (var i = 0; i < NUM_MULTIPLIES; ++i) {
-      outputs[i] = gf28.mul(inputs[i], inputs[NUM_MULTIPLIES + i]);
+    for (var i = 0; i < n; ++i) {
+      outputs[i] = op(inputs[i], inputs[n + i]);
     }
-  }, NUM_MULTIPLIES + ' multiplications');
+  }, n + ' ' + opStr + 's');
 }
 
-function testPow() {
+function runUnOp(opStr) {
+  var op = gf28[opStr];
+  var n = NUM_OPS[opStr];
   table.run(function() {
-    for (var i = 0; i < NUM_POWS; ++i) {
-      outputs[i] = gf28.pow(inputs[i], inputs[NUM_POWS + i]);
+    for (var i = 0; i < n; ++i) {
+      outputs[i] = op(inputs[i]);
     }
-  }, NUM_POWS + ' exponentiations');
+  }, n + ' ' + opStr + 's');
 }
 
-function testAdd() {
-  table.run(function() {
-    for (var i = 0; i < NUM_ADDS; ++i) {
-      outputs[i] = gf28.add(inputs[i], inputs[NUM_ADDS + i]);
-    }
-  }, NUM_ADDS + ' adds');
-}
+testMul = goog.partial(runBinOp, 'mul');
+testDiv = goog.partial(runBinOp, 'div');
+testInv = goog.partial(runUnOp, 'inv');
+testAdd = goog.partial(runBinOp, 'add');
+testPow = goog.partial(runBinOp, 'pow');
 </script>
