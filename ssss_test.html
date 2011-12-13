@@ -1,0 +1,28 @@
+<!doctype html>
+<title>ssss test</title>
+<script src="../closure-library/closure/goog/base.js"></script>
+<script src="deps.js"></script>
+<script>
+  goog.require('ssss');
+  goog.require('goog.testing.jsunit');
+</script>
+<body>
+<script>
+
+var secret = "secret message";
+
+function testSplitThreshold() {
+  assertThrows("throws on k = 1",
+               goog.partial(ssss.split, secret, 1));
+  assertThrows("throws on k < 1",
+               goog.partial(ssss.split, secret, -2));
+  ssss.split(secret, 2);  // should not throw error
+}
+
+function testSplitTotal() {
+  assertThrows("throws on n < k",
+               goog.partial(ssss.split, secret, 2, 1));
+  assertThrows("throws on n < k",
+               goog.partial(ssss.split, secret, 5, 2));
+}
+</script>
