@@ -11,61 +11,51 @@
 <div id="p"></div>
 <script>
 
+// generate lookup tables
+gf28.mul(1, 1);
+
 var table = new goog.testing.PerformanceTable(goog.dom.getElement('p'));
 
-var NUM_MULTIPLIES = 100000;
+var NUM_MULTIPLIES = 10000000;
 
-var NUM_POWS = 10000;
+var NUM_POWS = 1000000;
 
-var NUM_ADDS = 100000;
+var NUM_ADDS = 10000000;
 
-function testMultiply() {
-  var inputs = new Uint8Array(NUM_MULTIPLIES * 2);
-  var output = new Uint8Array(NUM_MULTIPLIES);
+var inputs, outputs;
+
+function setUp() {
+  var nInputs = Math.max(NUM_MULTIPLIES, NUM_POWS, NUM_ADDS);
+  inputs = new Uint8Array(nInputs * 2);
+  outputs = new Uint8Array(nInputs);
   var randomMock = new goog.testing.PseudoRandom(0, true);
-  for (var i = 0; i < NUM_MULTIPLIES; ++i) {
+  for (var i = 0; i < nInputs; ++i) {
     inputs[i] = Math.floor(Math.random() * 256);
-    inputs[NUM_MULTIPLIES + i] = Math.floor(Math.random() * 256);
+    inputs[nInputs + i] = Math.floor(Math.random() * 256);
   }
   randomMock.uninstall();
+}
 
+function testMultiply() {
   table.run(function() {
     for (var i = 0; i < NUM_MULTIPLIES; ++i) {
-      output[i] = gf28.mul(inputs[i], inputs[NUM_MULTIPLIES + i]);
+      outputs[i] = gf28.mul(inputs[i], inputs[NUM_MULTIPLIES + i]);
     }
   }, NUM_MULTIPLIES + ' multiplications');
 }
 
 function testPow() {
-  var inputs = new Uint8Array(NUM_POWS * 2);
-  var output = new Uint8Array(NUM_POWS);
-  var randomMock = new goog.testing.PseudoRandom(0, true);
-  for (var i = 0; i < NUM_POWS; ++i) {
-    inputs[i] = Math.floor(Math.random() * 256);
-    inputs[NUM_POWS + i] = Math.floor(Math.random() * 256);
-  }
-  randomMock.uninstall();
-
   table.run(function() {
     for (var i = 0; i < NUM_POWS; ++i) {
-      output[i] = gf28.pow(inputs[i], inputs[NUM_POWS + i]);
+      outputs[i] = gf28.pow(inputs[i], inputs[NUM_POWS + i]);
     }
   }, NUM_POWS + ' exponentiations');
 }
 
 function testAdd() {
-  var inputs = new Uint8Array(NUM_ADDS * 2);
-  var output = new Uint8Array(NUM_ADDS);
-  var randomMock = new goog.testing.PseudoRandom(0, true);
-  for (var i = 0; i < NUM_ADDS; ++i) {
-    inputs[i] = Math.floor(Math.random() * 256);
-    inputs[NUM_ADDS + i] = Math.floor(Math.random() * 256);
-  }
-  randomMock.uninstall();
-
   table.run(function() {
     for (var i = 0; i < NUM_ADDS; ++i) {
-      output[i] = gf28.add(inputs[i], inputs[NUM_ADDS + i]);
+      outputs[i] = gf28.add(inputs[i], inputs[NUM_ADDS + i]);
     }
   }, NUM_ADDS + ' adds');
 }
