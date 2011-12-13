@@ -11,7 +11,7 @@
 
 var secret = "secret message";
 
-function testSplitThreshold() {
+function testSplitThresholdArgument() {
   assertThrows("throws on k = 1",
                goog.partial(ssss.split, secret, 1));
   assertThrows("throws on k < 1",
@@ -19,10 +19,22 @@ function testSplitThreshold() {
   ssss.split(secret, 2);  // should not throw error
 }
 
-function testSplitTotal() {
+function testSplitTotalArgument() {
   assertThrows("throws on n < k",
                goog.partial(ssss.split, secret, 2, 1));
   assertThrows("throws on n < k",
                goog.partial(ssss.split, secret, 5, 2));
+  ssss.split(secret, 3, 5);  // should not throw error
+}
+
+function testSplitProducesNKeys() {
+  assertEquals("split produces n keys", 5, ssss.split(secret, 3, 5).length);
+  assertEquals("n defaults to k", 2, ssss.split(secret, 2).length);
+}
+
+function testSplitPrependsKeyNumber() {
+  var output = ssss.split(secret, 2);
+  assertEquals(0x00, output[0][0]);
+  assertEquals(0x01, output[1][0]);
 }
 </script>

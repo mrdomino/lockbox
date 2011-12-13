@@ -3,9 +3,15 @@ goog.provide('ssss');
 
 ssss.split = function(msg, k, n) {
   if (k <= 1) {
-    throw "blah";
+    throw "Threshold must be at least 2";
   }
   if (n < k) {
-    throw "blah";
+    throw "Must have at least k total keys";
   }
+  if (!n) n = k;
+  var ret = [];
+  for (var i = 0; i < n; ++i) {
+    ret[i] = [i];
+  }
+  return ret;
 }
