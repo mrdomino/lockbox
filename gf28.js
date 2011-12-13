@@ -186,9 +186,9 @@ gf28.exp_ = null;
 gf28.init_ = function() {
   if (!gf28.exp_) {
     gf28.log_ = new Uint8Array(gf28.SIZE);
-    // We pay 510 bytes in memory usage to reduce branchiness in lookup
+    // We pay 255 bytes in memory usage to reduce branchiness in lookup
     // operations.
-    gf28.exp_ = new Uint8Array(gf28.MASK * 3);
+    gf28.exp_ = new Uint8Array(gf28.MASK * 2);
 
     for (var i = 0; i < gf28.SIZE; ++i) {
       gf28.log_[i] = gf28.MASK;
@@ -206,7 +206,6 @@ gf28.init_ = function() {
     }
     for (var i = 0; i < gf28.MASK; ++i) {
       gf28.exp_[i + gf28.MASK] = gf28.exp_[i];
-      gf28.exp_[i + gf28.MASK * 2] = gf28.exp_[i];
     }
   }
 }
