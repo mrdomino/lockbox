@@ -1,9 +1,10 @@
 <!doctype html>
 <title>gf28 performance tests</title>
 <script src="../closure-library/closure/goog/base.js"></script>
+<script src="gf28-compiled.js"></script>
 <script src="deps.js"></script>
 <script>
-  goog.require('gf28');
+  //goog.require('gf28');
   goog.require('goog.testing.PerformanceTable');
   goog.require('goog.testing.PseudoRandom');
   goog.require('goog.testing.jsunit');
@@ -11,17 +12,24 @@
 <div id="p"></div>
 <script>
 
-// generate lookup tables
-gf28.mul(1, 1);
+try {
+  // generate lookup tables
+  gf28.mul(1, 1);
+} catch(e) {
+  if (e instanceof ReferenceError) {
+    alert("gf28 is not defined; gf28-compiled.js may not have been " +
+          "generated. Try running 'make'.");
+  }
+}
 
 var table = new goog.testing.PerformanceTable(goog.dom.getElement('p'));
 
 var NUM_OPS = {
-  'mul': 100000,
-  'div': 100000,
-  'inv': 100000,
-  'pow': 10000,
-  'add': 100000,
+  'mul': 10000000,
+  'div': 10000000,
+  'inv': 10000000,
+  'pow': 1000000,
+  'add': 10000000,
 }
 var MAX_OPS = NUM_OPS['add'];
 
