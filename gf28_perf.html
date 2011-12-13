@@ -24,7 +24,7 @@ var NUM_ADDS = 10000000;
 
 var inputs, outputs;
 
-function setUp() {
+(function() {
   var nInputs = Math.max(NUM_MULTIPLIES, NUM_POWS, NUM_ADDS);
   inputs = new Uint8Array(nInputs * 2);
   outputs = new Uint8Array(nInputs);
@@ -34,7 +34,7 @@ function setUp() {
     inputs[nInputs + i] = Math.floor(Math.random() * 256);
   }
   randomMock.uninstall();
-}
+})();
 
 function testMultiply() {
   table.run(function() {
