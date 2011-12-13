@@ -15,4 +15,4 @@ deps.js: $(JS)
 	$(DEPSWRITER) --root_with_prefix='. $(PREFIX)' > $@
 
 clean:
-	rm gf28-compiled.js
+	rm gf28-compiled.js deps.js
