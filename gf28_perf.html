@@ -33,7 +33,7 @@ var inputs, outputs;
   var randomMock = new goog.testing.PseudoRandom(0, true);
   for (var i = 0; i < MAX_OPS; ++i) {
     inputs[i] = Math.floor(Math.random() * 256);
-    inputs[MAX_OPS + i] = Math.floor(Math.random() * 256);
+    inputs[MAX_OPS + i] = Math.floor(Math.random() * 255) + 1;
   }
   randomMock.uninstall();
 })();
@@ -53,7 +53,7 @@ function runUnOp(opStr) {
   var n = NUM_OPS[opStr];
   table.run(function() {
     for (var i = 0; i < n; ++i) {
-      outputs[i] = op(inputs[i]);
+      outputs[i] = op(inputs[n + i]);
     }
   }, n + ' ' + opStr + 's');
 }
