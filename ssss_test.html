@@ -32,9 +32,4 @@ function testSplitProducesNKeys() {
   assertEquals("n defaults to k", 2, ssss.split(secret, 2).length);
 }
 
-function testSplitPrependsKeyNumber() {
-  var output = ssss.split(secret, 2);
-  assertEquals(0x00, output[0][0]);
-  assertEquals(0x01, output[1][0]);
-}
 </script>

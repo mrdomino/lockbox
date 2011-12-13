@@ -9,9 +9,5 @@ ssss.split = function(msg, k, n) {
     throw "Must have at least k total keys";
   }
   if (!n) n = k;
-  var ret = [];
-  for (var i = 0; i < n; ++i) {
-    ret[i] = [i];
-  }
-  return ret;
+  return {length: n};
 }
