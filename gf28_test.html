@@ -194,6 +194,7 @@ function testPow() {
   assertEquals(32, gf28.pow(2, 5));
   assertEquals(92, gf28.pow(25, 2));
   assertEquals(4, gf28.pow(2, 512));
+  assertEquals(72, gf28.pow(42, -2));
   assertThrows(goog.partial(gf28.pow, -1, 5));
 }
 
