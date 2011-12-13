@@ -100,9 +100,7 @@ gf28.mul = function(x, y) {
   gf28.checkArgs_(arguments);
   gf28.init_();
   if (x == 0 || y == 0) return 0;
-  var idx = gf28.log_[x] + gf28.log_[y];
-  if (idx >= gf28.MASK) idx -= gf28.MASK;
-  return gf28.exp_[idx];
+  return gf28.exp_[gf28.log_[x] + gf28.log_[y]];
 }
 
 /**
@@ -117,10 +115,7 @@ gf28.div = function(x, y) {
     return 0;
   }
   var idx = gf28.log_[x] - gf28.log_[y];
-  if (idx < 0) {
-    idx += gf28.MASK;
-  }
-  return gf28.exp_[idx];
+  return gf28.exp_[idx + gf28.MASK];
 }
 
 /**
@@ -134,7 +129,7 @@ gf28.inv = function(x) {
   if (x == 0) {
     return 0;
   }
-  return gf28.exp_[(gf28.MASK - gf28.log_[x]) % gf28.MASK];
+  return gf28.exp_[gf28.MASK - gf28.log_[x]];
 }
 
 /**
@@ -194,7 +189,7 @@ gf28.exp_ = null;
 gf28.init_ = function() {
   if (!gf28.exp_) {
     gf28.log_ = new Uint8Array(gf28.SIZE);
-    gf28.exp_ = new Uint8Array(gf28.SIZE);
+    gf28.exp_ = new Uint8Array(gf28.MASK * 3);
 
     for (var i = 0; i < gf28.SIZE; ++i) {
       gf28.log_[i] = gf28.MASK;
@@ -209,6 +204,10 @@ gf28.init_ = function() {
       if (accum & gf28.SIZE) {
         accum = (accum ^ gf28.PRIM_POLY) & gf28.MASK;
       }
+    }
+    for (var i = 0; i < gf28.MASK; ++i) {
+      gf28.exp_[i + gf28.MASK] = gf28.exp_[i];
+      gf28.exp_[i + gf28.MASK * 2] = gf28.exp_[i];
     }
   }
 }
