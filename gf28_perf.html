@@ -6,6 +6,7 @@
 <script>
   //goog.require('gf28');
   goog.require('goog.testing.PerformanceTable');
+  goog.require('goog.testing.PerformanceTimer');
   goog.require('goog.testing.PseudoRandom');
   goog.require('goog.testing.jsunit');
 </script>
@@ -22,7 +23,8 @@ try {
   }
 }
 
-var table = new goog.testing.PerformanceTable(goog.dom.getElement('p'));
+var table = new goog.testing.PerformanceTable(
+    goog.dom.getElement('p'), new goog.testing.PerformanceTimer(20));
 
 var NUM_OPS = {
   'mul': 10000000,
