@@ -1,0 +1,201 @@
+<!doctype html>
+<title>gf28 test</title>
+<script src="../closure-library/closure/goog/base.js"></script>
+<script src="deps.js"></script>
+<script>
+  goog.require('gf28');
+  goog.require('goog.array');
+  goog.require('goog.object');
+  goog.require('goog.functions');
+  goog.require('goog.testing.jsunit');
+</script>
+<body>
+<script>
+
+var p = function() {
+  var args = Array.prototype.slice.call(arguments);
+  return "(" + args.join(", ") + "): ";
+}
+
+function eq(x, y) { return x == y; }
+var ne = goog.functions.not(eq);
+
+var nonElems = [-1, 256, 257, true, "str"];
+
+function eachElem(fn, opt_start) {
+  var start = opt_start || 0;
+  for (var i = start; i < 256; ++i) {
+    fn(i);
+  }
+}
+
+function randElems(n, fn, opt_start) {
+  var start = opt_start;
+  if (typeof opt_start == 'undefined') {
+    start = 0;
+  }
+  for (var i = 0; i < n; ++i) {
+    fn(Math.floor(Math.random() * (256 - start)) + start);
+  }
+}
+
+/**
+ * @param {function(gf28.elem, gf28.elem): *} fn
+ * @param {function(*, gf28.elem, gf28.elem): boolean} pred
+ * @param {string=} opt_comment
+ */
+function assertEveryElementBinary(fn, pred, opt_comment) {
+  randElems(10, function(x) {
+    randElems(10, function(y) {
+      var z = fn(x, y);
+      assertTrue(p(x, y, z) + opt_comment,
+                 pred(z, x, y));
+    });
+  });
+}
+
+function assertClosedBinaryFunc(fn) {
+  goog.array.forEach(nonElems, function(x) {
+    assertThrows(goog.partial(fn, x, 1));
+    assertThrows(goog.partial(fn, 1, x));
+  });
+  assertEveryElementBinary(fn, gf28.isElem);
+}
+
+/**
+ * @param {gf28.elem} zero
+ * @param {gf28.binaryFunc} plus
+ * @param {gf28.unaryFunc} inv
+ */
+function assertFormsCommutativeGroup(zero, plus, inv) {
+  // XXX sample from the group instead of relying on the number <-> elem
+  // mapping here. This only happens to work because 0 is the binary
+  // representation of the additive identity and 1 is the binary representation
+  // of the multiplicative identity.
+  var start = zero;
+  eachElem(function(x) {
+    assertEquals(p(x, zero) + "x == 0 + x", x, plus(zero, x));
+    assertEquals(p(x, zero) + "x == x + 0", x, plus(x, zero));
+    assertEquals(p(x, zero) + "0 == x + inv(x)", zero, plus(x, inv(x)));
+    assertEquals(p(x, zero) + "x == inv(inv(x))", x, inv(inv(x)));
+  }, start);
+  randElems(10, function(x) {
+    randElems(10, function(y) {
+      assertEquals(p(x, y) + "x + y == y + x",
+                   plus(x, y), plus(y, x));
+      randElems(10, function(z) {
+        assertEquals(p(x, y, z) + "x + (y + z) == (x + y) + z",
+                     plus(x, plus(y, z)), plus(plus(x, y), z));
+      }, start);
+    }, start);
+  }, start);
+}
+
+/**
+ * @param {gf28.elem} zero
+ * @param {gf28.binaryFunc} plus
+ * @param {gf28.elem} gen
+ * @param {number} size
+ */
+function assertGeneratesGroupOfSize(zero, plus, gen, size) {
+  var xs = {};
+  var accum = zero, i = 0;
+  while (i++ < size) {
+    xs[accum] = true;
+    accum = plus(accum, gen);
+  }
+  assertEquals(zero, accum);
+  assertEquals(size, goog.object.getCount(xs));
+}
+
+function testIsElemWorks() {
+  eachElem(function(x) {
+    assertTrue("isElem(" + x + ")", gf28.isElem(x));
+  });
+  goog.array.forEach(nonElems, function(x) {
+    assertFalse("!isElem(" + x + ")", gf28.isElem(x));
+  });
+}
+
+function testConstants() {
+  assertEquals("additive identity", 0, gf28.ZERO);
+  assertEquals("multiplicative identity", 1, gf28.ONE);
+  assertEquals("size of field", 256, gf28.SIZE);
+  assertEquals("field element mask", 255, gf28.MASK);
+}
+
+function testAdd() {
+  assertClosedBinaryFunc(gf28.add);
+  assertEveryElementBinary(gf28.add, function(fxy, x, y) {
+    return fxy == (x ^ y);
+  }, "add is XOR");
+}
+
+function testSub() {
+  assertClosedBinaryFunc(gf28.sub);
+  assertEveryElementBinary(gf28.sub, function(fxy, x, y) {
+    return fxy == (x ^ y);
+  }, "sub is XOR");
+}
+
+function testAdditiveGroupProperties() {
+  var addinv = goog.partial(gf28.sub, gf28.ZERO);
+  assertFormsCommutativeGroup(gf28.ZERO, gf28.add, addinv);
+}
+
+function testMul() {
+  assertClosedBinaryFunc(gf28.mul);
+  assertEquals(10, gf28.mul(2, 5));
+  assertEquals(20, gf28.mul(10, 2));
+  assertEquals(227, gf28.mul(2, 255));
+  assertEquals(92, gf28.mul(4, 23));
+  assertEquals(32, gf28.mul(92, 23));
+}
+
+function testDiv() {
+  assertEquals(5, gf28.div(10, 2));
+  assertEquals(50, gf28.div(250, 5));
+  assertEquals(253, gf28.div(1, 255));
+  assertThrows(goog.partial(gf28.div, 1, 0));
+  assertThrows(goog.partial(gf28.div, 0, 0));
+  eachElem(function(x) {
+    assertEquals(0, gf28.div(0, x));
+  }, 1);
+}
+
+function testInv() {
+  eachElem(function(x) {
+    assertTrue(gf28.isElem(gf28.inv(x)));
+  }, 1);
+  goog.array.forEach(nonElems, function(x) {
+    assertThrows(goog.partial(gf28.inv, x));
+  });
+}
+
+function testMultiplicativeGroupProperties() {
+  assertFormsCommutativeGroup(gf28.ONE, gf28.mul, gf28.inv);
+  assertGeneratesGroupOfSize(gf28.ONE, gf28.mul, gf28.GEN, gf28.SIZE - 1);
+}
+
+function testDistributiveRule() {
+  randElems(10, function(x) {
+    randElems(10, function(y) {
+      randElems(10, function(z) {
+        assertEquals(p(x, y, z) + "x * (y + z) == x * y + x * z",
+                     gf28.mul(x, gf28.add(y, z)),
+                     gf28.add(gf28.mul(x, y), gf28.mul(x, z)));
+      });
+    });
+  });
+}
+
+function testPow() {
+  assertEquals(1, gf28.pow(2, 0));
+  assertEquals(32, gf28.pow(2, 5));
+  assertEquals(92, gf28.pow(25, 2));
+  assertEquals(4, gf28.pow(2, 512));
+  assertEquals(72, gf28.pow(42, -2));
+  assertThrows(goog.partial(gf28.pow, -1, 5));
+}
+
+</script>
