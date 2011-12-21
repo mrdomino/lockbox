@@ -1,5 +1,7 @@
 goog.provide('ssss');
 
+goog.require('gf28');
+
 
 /**
  * @param {string|ArrayBuffer} msg Message to split.
