@@ -33,7 +33,7 @@ ssss.split = function(msg, k, n, opt_rng) {
   }
 
   for (var i = 0; i < msg.length; ++i) {
-    cs.set(opt_rng.getRandomBytes(deg), 1);
+    cs.set(opt_rng['getRandomBytes'](deg), 1);
     cs[0] = msg.charCodeAt(i);
     var polyAt = function(x) {
       var sum = gf28.ZERO;
