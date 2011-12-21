@@ -59,7 +59,7 @@ function testSsssKeyInterface() {
 
 function testSplitWithThreshold2() {
   var out = ssss.split(secret, 2);
-  // Recombine out[0] manually using lagrange interpolation:
+  // Recombine manually using lagrange interpolation:
   //   p(x) = y_0 l_0(x) + y_1 l_1(x)
   // where
   //   l_0(x) = (x - x_1)/(x_0 - x_1)
@@ -83,8 +83,11 @@ function testSplitWithThreshold2() {
 
 // TODO:
 // split with threshold >2
-// n > 255
-// produced keys are random
-// combine
+// behavior on n > 255
+// produced keys are random (inductive proof)
+// keys have expected length
+// combine combines
+// behavior given rng with insufficient randomness
+// behavior on weird messages
 
 </script>
