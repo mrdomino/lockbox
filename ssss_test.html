@@ -1,0 +1,94 @@
+<!doctype html>
+<title>ssss test</title>
+<script src="../closure-library/closure/goog/base.js"></script>
+<script src="deps.js"></script>
+<script>
+  goog.require('ssss');
+  goog.require('gf28');
+  goog.require('goog.testing.jsunit');
+</script>
+<body>
+<script>
+
+var secret = "secret message";
+
+function testSplitThresholdArgument() {
+  assertThrows("throws on k = 1",
+               goog.partial(ssss.split, secret, 1));
+  assertThrows("throws on k < 1",
+               goog.partial(ssss.split, secret, -2));
+  ssss.split(secret, 2);  // should not throw error
+}
+
+function testSplitTotalArgument() {
+  assertThrows("throws on n < k",
+               goog.partial(ssss.split, secret, 2, 1));
+  assertThrows("throws on n < k",
+               goog.partial(ssss.split, secret, 5, 2));
+  ssss.split(secret, 3, 5);  // should not throw error
+}
+
+function testSplitProducesNKeys() {
+  assertEquals("split produces n keys", 5, ssss.split(secret, 3, 5).length);
+  assertEquals("n defaults to k", 2, ssss.split(secret, 2).length);
+}
+
+function testSplitConsumesEntropy() {
+  var mockRng = function() {
+    ssss.MathRng.call(this);
+    this.bytesReturned = 0;
+  }
+  goog.inherits(mockRng, ssss.MathRng);
+  mockRng.prototype.getRandomBytes = function(n) {
+    this.bytesReturned += n;
+    return mockRng.superClass_.getRandomBytes.call(this, n);
+  }
+  var rng = new mockRng;
+  ssss.split(secret, 3, 5, rng);
+  assertEquals(secret.length * 2, rng.bytesReturned);
+  rng = new mockRng;
+  ssss.split(secret, 4, 5, rng);
+  assertEquals(secret.length * 3, rng.bytesReturned);
+}
+
+function testSsssKeyInterface() {
+  var out = ssss.split(secret, 3, 5);
+  assertEquals(1, ssss.getX(out[0]));
+  assertEquals(2, ssss.getX(out[1]));
+}
+
+function testSplitWithThreshold2() {
+  var out = ssss.split(secret, 2);
+  // Recombine manually using lagrange interpolation:
+  //   p(x) = y_0 l_0(x) + y_1 l_1(x)
+  // where
+  //   l_0(x) = (x - x_1)/(x_0 - x_1)
+  //   l_1(x) = (x - x_0)/(x_1 - x_0)
+  // We want p(0), so:
+  //   y_0 (-x_1/(x_0 - x_1)) + y_1 (-x_0/(x_1 - x_0))
+  var decodeByte = function(x0, y0, x1, y1) {
+    var denom = gf28.sub(x0, x1);
+    var l0 = gf28.div(x1, denom);
+    var l1 = gf28.div(x0, denom);
+    var p0 = gf28.add(gf28.mul(y0, l0), gf28.mul(y1, l1));
+    return p0;
+  }
+
+  for (var i = 0; i < secret.length; ++i) {
+    assertEquals(secret.charCodeAt(i),
+                 decodeByte(ssss.getX(out[0]), ssss.getY(out[0], i),
+                            ssss.getX(out[1]), ssss.getY(out[1], i)));
+  }
+}
+
+// TODO:
+// split with threshold >2
+// behavior on n > 255
+// produced keys are random (inductive proof)
+// keys have expected length
+// combine combines
+// behavior given rng with insufficient randomness
+// behavior on weird messages
+// behavior on large m
+
+</script>
