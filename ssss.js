@@ -104,3 +104,10 @@ ssss.getY = function(key, idx) {
   var k = new Uint8Array(key);
   return k[idx + 1];
 }
+
+goog.exportSymbol('ssss.MathRng', ssss.MathRng);
+goog.exportProperty(ssss.MathRng.prototype, 'getRandomBytes',
+                    ssss.MathRng.prototype.getRandomBytes);
+goog.exportSymbol('ssss.split', ssss.split);
+goog.exportSymbol('ssss.getX', ssss.getX);
+goog.exportSymbol('ssss.getY', ssss.getY);
