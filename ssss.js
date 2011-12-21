@@ -59,7 +59,7 @@ ssss.Rng = function() {}
 
 /**
  * @param {number} n Number of random bytes to return.
- * @return {ArrayBuffer} Buffer containing random bytes.
+ * @return {TypedArray} Buffer containing random bytes.
  */
 ssss.Rng.prototype.getRandomBytes = goog.abstractMethod;
 
@@ -74,10 +74,9 @@ ssss.MathRng = function() {}
  * @inheritDoc
  */
 ssss.MathRng.prototype.getRandomBytes = function(n) {
-  var ret = new ArrayBuffer(n);
-  var retBytes = new Uint8Array(ret);
+  var ret = new Uint8Array(n);
   for (var i = 0; i < n; ++i) {
-    retBytes[i] = Math.floor(Math.random() * 256);
+    ret[i] = Math.floor(Math.random() * 256);
   }
   return ret;
 }
