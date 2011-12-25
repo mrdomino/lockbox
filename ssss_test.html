@@ -11,6 +11,10 @@
 <script>
 
 var secret = "secret message";
+var secret_arr = new Uint8Array(secret.length);
+for (var i = 0; i < secret.length; ++i) {
+  secret_arr[i] = secret.charCodeAt(i);
+}
 
 function sameBytes(expected, actual) {
   if (expected.length != actual.length) {
@@ -125,10 +129,6 @@ function testGivesOriginalMessageWithNullRng() {
 
   // With the null RNG, all our polynomials are p(x) = c_0, so all our points
   // are (x, c_0).
-  var secret_arr = new Uint8Array(secret.length);
-  for (var i = 0; i < secret.length; ++i) {
-    secret_arr[i] = secret.charCodeAt(i);
-  }
   var output = ssss.split(secret, 3, 5, rng);
   for (var i = 0; i < output.length; ++i) {
     assertTrue(sameBytes(secret_arr, output[i].subarray(1)));
