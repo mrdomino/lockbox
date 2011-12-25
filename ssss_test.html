@@ -12,6 +12,19 @@
 
 var secret = "secret message";
 
+function sameBytes(expected, actual) {
+  if (expected.length != actual.length) {
+    return false;
+  }
+  var n = expected.length;
+  for (var i = 0; i < n; ++i) {
+    if (expected[i] != actual[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
 function testSplitThresholdArgument() {
   assertThrows("throws on k = 1",
                goog.partial(ssss.split, secret, 1));
@@ -83,12 +96,80 @@ function testSplitWithThreshold2() {
   }
 }
 
+function testThrowsErrorOnRngWithInsufficientRandomness() {
+  var mockRng = function() {}
+  goog.inherits(mockRng, ssss.MathRng);
+  mockRng.prototype.getRandomBytes = function(n) {
+    throw "Not enough entropy!";
+  }
+  var rng = new mockRng;
+
+  assertThrows(goog.partial(ssss.split, secret, 3, 5, rng));
+}
+
+function testKeysHaveCorrectLength() {
+  var out = ssss.split(secret, 8, 12);
+  for (var i = 0; i < 12; ++i) {
+    assertEquals(secret.length + 1, out[i].length);
+  }
+}
+
+function testGivesOriginalMessageWithNullRng() {
+  var nullRng = function() {}
+  goog.inherits(nullRng, ssss.MathRng);
+  nullRng.prototype.getRandomBytes = function(n) {
+    return new Uint8Array(n);
+  }
+  var rng = new nullRng;
+  assertEquals(0, rng.getRandomBytes(1)[0]);
+
+  // With the null RNG, all our polynomials are p(x) = c_0, so all our points
+  // are (x, c_0).
+  var secret_arr = new Uint8Array(secret.length);
+  for (var i = 0; i < secret.length; ++i) {
+    secret_arr[i] = secret.charCodeAt(i);
+  }
+  var output = ssss.split(secret, 3, 5, rng);
+  for (var i = 0; i < output.length; ++i) {
+    assertTrue(sameBytes(secret_arr, output[i].subarray(1)));
+  }
+}
+
+function testGivesEncodedMessageWithOneRng() {
+  var oneRng = function() {}
+  goog.inherits(oneRng, ssss.MathRng);
+  oneRng.prototype.getRandomBytes = function(n) {
+    var ret = new Uint8Array(n);
+    for (var i = 0; i < n; ++i) {
+      ret[i] = 1;
+    }
+    return ret;
+  }
+  var rng = new oneRng;
+  assertEquals(1, rng.getRandomBytes(5)[4]);
+
+  // With OneRng, each polynomial is p(x) = c_0 + x + ... + x^k, so each point
+  // is (x, c_0 XOR x XOR ... XOR x^k).
+  var output = ssss.split(secret, 3, 5, rng);
+  for (var i = 0; i < output.length; ++i) {
+    var polyAt = function(x, c0) {
+      var start = c0;
+      for (var j = 1; j < 3; ++j) {
+        start = gf28.add(start, gf28.pow(x, j));
+      }
+      return start;
+    }
+    for (var l = 0; l < secret.length; ++l) {
+      assertEquals(polyAt(ssss.getX(output[i]), secret.charCodeAt(l)),
+                   output[i][l + 1]);
+    }
+  }
+}
+
 // TODO:
 // split with threshold >2
 // produced keys are random (inductive proof)
-// keys have expected length
 // combine combines
-// behavior given rng with insufficient randomness
 // behavior on weird messages
 // behavior on large m
 
