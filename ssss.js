@@ -21,6 +21,9 @@ ssss.split = function(msg, k, n, opt_rng) {
   if (n < k) {
     throw "Must have at least k total keys";
   }
+  if (n > gf28.MASK) {
+    throw "Can't make more than " + gf28.MASK + " distinct keys.";
+  }
   if (!n) n = k;
 
   var deg = k - 1;

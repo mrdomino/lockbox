@@ -25,6 +25,8 @@ function testSplitTotalArgument() {
                goog.partial(ssss.split, secret, 2, 1));
   assertThrows("throws on n < k",
                goog.partial(ssss.split, secret, 5, 2));
+  assertThrows("throws on n > gf28.MASK",
+               goog.partial(ssss.split, secret, 5, gf28.MASK + 1));
   ssss.split(secret, 3, 5);  // should not throw error
 }
 
@@ -83,7 +85,6 @@ function testSplitWithThreshold2() {
 
 // TODO:
 // split with threshold >2
-// behavior on n > 255
 // produced keys are random (inductive proof)
 // keys have expected length
 // combine combines
