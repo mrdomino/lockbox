@@ -151,14 +151,14 @@ function testGivesEncodedMessageWithOneRng() {
   // With OneRng, each polynomial is p(x) = c_0 + x + ... + x^k, so each point
   // is (x, c_0 XOR x XOR ... XOR x^k).
   var output = ssss.split(secret, 3, 5, rng);
-  for (var i = 0; i < output.length; ++i) {
-    var polyAt = function(x, c0) {
-      var start = c0;
-      for (var j = 1; j < 3; ++j) {
-        start = gf28.add(start, gf28.pow(x, j));
-      }
-      return start;
+  var polyAt = function(x, c0) {
+    var ret = c0;
+    for (var j = 1; j < 3; ++j) {
+      ret = gf28.add(ret, gf28.pow(x, j));
     }
+    return ret;
+  }
+  for (var i = 0; i < output.length; ++i) {
     for (var l = 0; l < secret.length; ++l) {
       assertEquals(polyAt(ssss.getX(output[i]), secret.charCodeAt(l)),
                    output[i][l + 1]);
