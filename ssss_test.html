@@ -76,6 +76,16 @@ function testSsssKeyInterface() {
   assertEquals(2, ssss.getX(out[1]));
 }
 
+function testSplitWorksWithArrayBuffers() {
+  var buf = new ArrayBuffer(4);
+  var arr = new Uint8Array(buf);
+  arr[0] = 0x99;
+  arr[1] = 0x10;
+  arr[2] = 0xff;
+  arr[3] = 0x00;
+  var out = ssss.split(buf, 2);  // should not throw error
+}
+
 function testSplitWithThreshold2() {
   var out = ssss.split(secret, 2);
   // Recombine manually using lagrange interpolation:
@@ -167,7 +177,13 @@ function testGivesEncodedMessageWithOneRng() {
 }
 
 function testCombineWithInsufficientPointsDoesNotGiveSecret() {
-  assertTrue("not implemented", false);
+  var out = ssss.split(secret, 3, 5);
+  var combined = ssss.combine(out);
+  assertFalse(sameBytes(combined, secret_arr));
+
+  out = ssss.split(secret, 8, 12);
+  var combined = ssss.combine(out.slice(1, 8));
+  assertFalse(sameBytes(combined, secret_arr));
 }
 
 function testComebineCombines() {

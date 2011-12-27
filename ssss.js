@@ -26,6 +26,19 @@ ssss.split = function(msg, k, n, opt_rng) {
   }
   if (!n) n = k;
 
+  if (msg instanceof ArrayBuffer) {
+    var view = new Uint8Array(msg);
+    msg = view;
+  } else if (typeof msg == 'string') {
+    var arr = new Uint8Array(msg.length)
+    for (var i = 0; i < msg.length; ++i) {
+      arr[i] = msg.charCodeAt(i);
+    }
+    msg = arr;
+  } else {
+    throw "Unhandled message type: " + typeof msg;
+  }
+
   var deg = k - 1;
 
   var cs = new Uint8Array(deg + 1);
@@ -37,7 +50,7 @@ ssss.split = function(msg, k, n, opt_rng) {
 
   for (var i = 0; i < msg.length; ++i) {
     cs.set(opt_rng['getRandomBytes'](deg), 1);
-    cs[0] = msg.charCodeAt(i);
+    cs[0] = msg[i];
     var polyAt = function(x) {
       var sum = gf28.ZERO;
       for (var j = 0; j < cs.length; ++j) {
