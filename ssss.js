@@ -94,7 +94,7 @@ ssss.combine = function(keys) {
  * @param {Array.<{x: gf28.elem, y: gf28.elem}>} pts Points to combine.
  * @return {gf28.elem} Interpolated polynomial evaluated at x == 0.
  */
-ssss.combinePt_ = function(pts, x) {
+ssss.combinePt_ = function(pts) {
   var sum = gf28.ZERO;
   var x = gf28.ZERO;
 
