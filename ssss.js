@@ -66,6 +66,34 @@ ssss.split = function(msg, k, n, opt_rng) {
 }
 
 /**
+ * Use LaGrange interpolation to recombine k points giving the original secret
+ * message.
+ * The LaGrange polynomial over the points ((x_0, y_0), ..., (x_n, y_n)) is
+ *   p(x) = y_0 l_0(x) + ... + y_n l_n(x)
+ * where
+ *   l_i(x) = \product_{j!=i} (x - x_j)/(x_i - x_j).
+ *
+ * @param {Array.<ssss.Key>} keys Array of keys to recombine.
+ * @return {ArrayBuffer} The decoded message.
+ */
+ssss.combine = function(keys) {
+  var sum = gf28.ZERO;
+  var x = gf28.ZERO;
+
+  for (var i = 0; i < keys.length; ++i) {
+    var xi = keys[i][0];
+    var prod = gf28.ONE;
+    for (var j = 0; j < keys.length; ++j) {
+      if (i == j) continue;
+      var xj = keys[j][0];
+      prod = gf28.mul(prod, gf28.div(gf28.sub(x, xj), gf28.sub(xi, xj)));
+    }
+    sum = gf28.add(sum, gf28.mul(keys[i][1], prod));
+  }
+  return [sum];
+}
+
+/**
  * Interface to an RNG that allows extracting known quantities of entropy.
  * @interface
  */

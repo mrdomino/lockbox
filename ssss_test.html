@@ -193,6 +193,20 @@ function testCombineWithInsufficientPointsDoesNotGiveSecret() {
   assertFalse(sameBytes(combined, secret_arr));
 }
 
+function testCombineCombinesSingleByte() {
+  var out = ssss.split('a', 3);
+  var combined = ssss.combine(out);
+  assertEquals('a'.charCodeAt(0), combined[0]);
+
+  out = ssss.split('c', 5, 12);
+  combined = ssss.combine([out[0], out[2], out[4], out[6], out[10]]);
+  assertEquals('c'.charCodeAt(0), combined[0]);
+
+  out = ssss.split('b', 4, 12);
+  combined = ssss.combine(out);
+  assertEquals('b'.charCodeAt(0), combined[0]);
+}
+
 function testComebineCombines() {
   assertTrue("not implemented", false);
 }
