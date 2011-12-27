@@ -93,6 +93,7 @@ ssss.combine = function(keys) {
 /**
  * @param {Array.<{x: gf28.elem, y: gf28.elem}>} pts Points to combine.
  * @return {gf28.elem} Interpolated polynomial evaluated at x == 0.
+ * @private
  */
 ssss.combinePt_ = function(pts) {
   var sum = gf28.ZERO;
@@ -168,6 +169,7 @@ ssss.getY = function(key, idx) {
 goog.exportSymbol('ssss.MathRng', ssss.MathRng);
 goog.exportProperty(ssss.MathRng.prototype, 'getRandomBytes',
                     ssss.MathRng.prototype.getRandomBytes);
+goog.exportSymbol('ssss.combine', ssss.combine);
 goog.exportSymbol('ssss.split', ssss.split);
 goog.exportSymbol('ssss.getX', ssss.getX);
 goog.exportSymbol('ssss.getY', ssss.getY);
