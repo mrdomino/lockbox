@@ -74,23 +74,41 @@ ssss.split = function(msg, k, n, opt_rng) {
  *   l_i(x) = \product_{j!=i} (x - x_j)/(x_i - x_j).
  *
  * @param {Array.<ssss.Key>} keys Array of keys to recombine.
- * @return {ArrayBuffer} The decoded message.
+ * @return {Uint8Array} The decoded message.
  */
 ssss.combine = function(keys) {
+  var m = keys[0].length - 1;
+  var ret = new Uint8Array(m);
+  var pts = new Array(keys.length);
+
+  for (var i = 0; i < m; ++i) {
+    for (var j = 0; j < keys.length; ++j) {
+      pts[j] = {'x': keys[j][0], 'y': keys[j][i + 1]};
+    }
+    ret[i] = ssss.combinePt_(pts);
+  }
+  return ret;
+}
+
+/**
+ * @param {Array.<{x: gf28.elem, y: gf28.elem}>} pts Points to combine.
+ * @return {gf28.elem} Interpolated polynomial evaluated at x == 0.
+ */
+ssss.combinePt_ = function(pts, x) {
   var sum = gf28.ZERO;
   var x = gf28.ZERO;
 
-  for (var i = 0; i < keys.length; ++i) {
-    var xi = keys[i][0];
+  for (var i = 0; i < pts.length; ++i) {
+    var xi = pts[i]['x'];
     var prod = gf28.ONE;
-    for (var j = 0; j < keys.length; ++j) {
+    for (var j = 0; j < pts.length; ++j) {
       if (i == j) continue;
-      var xj = keys[j][0];
+      var xj = pts[j]['x'];
       prod = gf28.mul(prod, gf28.div(gf28.sub(x, xj), gf28.sub(xi, xj)));
     }
-    sum = gf28.add(sum, gf28.mul(keys[i][1], prod));
+    sum = gf28.add(sum, gf28.mul(pts[i]['y'], prod));
   }
-  return [sum];
+  return sum;
 }
 
 /**

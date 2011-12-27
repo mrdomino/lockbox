@@ -5,6 +5,7 @@
 <script>
   goog.require('ssss');
   goog.require('gf28');
+  goog.require('goog.crypt.base64');
   goog.require('goog.testing.jsunit');
 </script>
 <body>
@@ -17,6 +18,9 @@ for (var i = 0; i < secret.length; ++i) {
 }
 
 function sameBytes(expected, actual) {
+  if (!actual instanceof Uint8Array) {
+    actual = new Uint8Array(actual);
+  }
   if (expected.length != actual.length) {
     return false;
   }
@@ -27,6 +31,10 @@ function sameBytes(expected, actual) {
     }
   }
   return true;
+}
+
+Uint8Array.prototype.toString = function() {
+  return goog.crypt.base64.encodeByteArray(this);
 }
 
 var nullRng = function() {}
@@ -185,11 +193,11 @@ function testGivesEncodedMessageWithOneRng() {
 
 function testCombineWithInsufficientPointsDoesNotGiveSecret() {
   var out = ssss.split(secret, 3, 5);
-  var combined = ssss.combine(out);
+  var combined = ssss.combine([out[0], out[2]]);
   assertFalse(sameBytes(combined, secret_arr));
 
   out = ssss.split(secret, 8, 12);
-  var combined = ssss.combine(out.slice(1, 8));
+  combined = ssss.combine(out.slice(1, 8));
   assertFalse(sameBytes(combined, secret_arr));
 }
 
@@ -207,8 +215,15 @@ function testCombineCombinesSingleByte() {
   assertEquals('b'.charCodeAt(0), combined[0]);
 }
 
-function testComebineCombines() {
-  assertTrue("not implemented", false);
+function assertCombinedEquals(expected, arr) {
+  var combined = ssss.combine(arr);
+  assertTrue("Expected:\n" + expected + "\nActual:\n" + combined + "\narr:\n" +
+             arr.join("\n"),
+             sameBytes(expected, ssss.combine(arr)));
+}
+
+function testCombineCombines() {
+  assertCombinedEquals(secret_arr, ssss.split(secret, 4));
 }
 
 function testCombineWithBadMessages() {
@@ -220,7 +235,6 @@ function testSplitWithStrangeMessages() {
 }
 
 // TODO:
-// split with threshold >2
 // produced keys are random (inductive proof)
 
 </script>
