@@ -35,8 +35,6 @@ ssss.split = function(msg, k, n, opt_rng) {
       arr[i] = msg.charCodeAt(i);
     }
     msg = arr;
-  } else {
-    throw "Unhandled message type: " + typeof msg;
   }
 
   var deg = k - 1;

@@ -99,7 +99,12 @@ function testSplitWorksWithArrayBuffers() {
   arr[1] = 0x10;
   arr[2] = 0xff;
   arr[3] = 0x00;
-  var out = ssss.split(buf, 2);  // should not throw error
+  ssss.split(buf, 2);  // should not throw error
+}
+
+function testSplitWorksWithByteArrays() {
+  var msg = [0x99, 0x10, 0xff];
+  ssss.split(msg, 3);  // should not throw error
 }
 
 function testSplitWithThreshold2() {
