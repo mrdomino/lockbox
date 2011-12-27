@@ -29,6 +29,22 @@ function sameBytes(expected, actual) {
   return true;
 }
 
+var nullRng = function() {}
+goog.inherits(nullRng, ssss.MathRng);
+nullRng.prototype.getRandomBytes = function(n) {
+  return new Uint8Array(n);
+}
+
+var oneRng = function() {}
+goog.inherits(oneRng, ssss.MathRng);
+oneRng.prototype.getRandomBytes = function(n) {
+  var ret = new Uint8Array(n);
+  for (var i = 0; i < n; ++i) {
+    ret[i] = 1;
+  }
+  return ret;
+}
+
 function testSplitThresholdArgument() {
   assertThrows("throws on k = 1",
                goog.partial(ssss.split, secret, 1));
@@ -129,11 +145,6 @@ function testKeysHaveCorrectLength() {
 }
 
 function testGivesOriginalMessageWithNullRng() {
-  var nullRng = function() {}
-  goog.inherits(nullRng, ssss.MathRng);
-  nullRng.prototype.getRandomBytes = function(n) {
-    return new Uint8Array(n);
-  }
   var rng = new nullRng;
   assertEquals(0, rng.getRandomBytes(1)[0]);
 
@@ -146,15 +157,6 @@ function testGivesOriginalMessageWithNullRng() {
 }
 
 function testGivesEncodedMessageWithOneRng() {
-  var oneRng = function() {}
-  goog.inherits(oneRng, ssss.MathRng);
-  oneRng.prototype.getRandomBytes = function(n) {
-    var ret = new Uint8Array(n);
-    for (var i = 0; i < n; ++i) {
-      ret[i] = 1;
-    }
-    return ret;
-  }
   var rng = new oneRng;
   assertEquals(1, rng.getRandomBytes(5)[4]);
 
