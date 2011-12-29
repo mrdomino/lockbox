@@ -78,12 +78,10 @@ ssss.split = function(msg, k, opt_n, opt_rng) {
 }
 
 /**
- * Use LaGrange interpolation to recombine k points giving the original secret
- * message.
- * The LaGrange polynomial over the points ((x_0, y_0), ..., (x_n, y_n)) is
- *   p(x) = y_0 l_0(x) + ... + y_n l_n(x)
- * where
- *   l_i(x) = \product_{j!=i} (x - x_j)/(x_i - x_j).
+ * Recombines k or more keys produced by ssss.split back into the original
+ * secret message. If fewer than k keys are given, the result will be random.
+ * No checksums are embedded; clients are responsible for constructing their
+ * own verification mechanism, e.g. signing the message prior to encryption.
  *
  * @param {Array.<ssss.Key>} keys Array of keys to recombine.
  * @return {Uint8Array} The decoded message.
@@ -108,6 +106,13 @@ ssss.combine = function(keys) {
  * @private
  */
 ssss.combinePt_ = function(pts) {
+  // We use LaGrange interpoluation to determine p(x) and evaluate it at 0 to
+  // retrieve the original byte.  The LaGrange polynomial over the points
+  // ((x_0, y_0), ..., (x_n, y_n)) is
+  //   p(x) = y_0 l_0(x) + ... + y_n l_n(x)
+  // where
+  //   l_i(x) = \product_{j!=i} (x - x_j)/(x_i - x_j).
+
   var sum = gf28.ZERO;
   var x = gf28.ZERO;
 
