@@ -4,17 +4,23 @@ goog.require('gf28');
 
 
 /**
- * @param {string|ArrayBuffer} msg Message to split.
+ * Uses Shamir's Secret Sharing scheme to split a message into n distinct
+ * keys.
+ *
+ * @param {string|ArrayBuffer|Array.<number>} msg Message to split -- either a
+ *     string, an ArrayBuffer, or an array of bytes.
  * @param {number} k Minimum number of keys needed to recombine msg.
- * @param {number} n Total number of keys to produce.
- * @param {ssss.Rng=} opt_rng Entropy source for the algorithm.
+ * @param {number=} opt_n Total number of keys to produce (if unspecified,
+ *     n=k).
+ * @param {ssss.Rng=} opt_rng Entropy source for the algorithm (if
+ *     unspecified, use Math.random).
  * @return {Array.<ssss.Key>} n keys of which any k can reconstruct msg, for
  *     which any k - 1 or fewer are indistinguishable from random.
  */
-ssss.split = function(msg, k, n, opt_rng) {
-  if (typeof opt_rng == 'undefined') {
-    opt_rng = new ssss.MathRng;
-  }
+ssss.split = function(msg, k, opt_n, opt_rng) {
+  var n = (typeof opt_n == 'undefined') ? k : opt_n;
+  var rng = (typeof opt_rng == 'undefined') ? new ssss.MathRng : opt_rng;
+
   if (k <= 1) {
     throw "Threshold must be at least 2";
   }
@@ -24,39 +30,45 @@ ssss.split = function(msg, k, n, opt_rng) {
   if (n > gf28.MASK) {
     throw "Can't make more than " + gf28.MASK + " distinct keys.";
   }
-  if (!n) n = k;
 
+  var m, view;
   if (msg instanceof ArrayBuffer) {
-    var view = new Uint8Array(msg);
-    msg = view;
+    view = new Uint8Array(msg);
+    m = view.length;
   } else if (typeof msg == 'string') {
-    var arr = new Uint8Array(msg.length)
-    for (var i = 0; i < msg.length; ++i) {
-      arr[i] = msg.charCodeAt(i);
+    m = msg.length;
+    view = new Uint8Array(m);
+    for (var i = 0; i < m; ++i) {
+      view[i] = msg.charCodeAt(i);
     }
-    msg = arr;
+  } else {
+    m = msg.length;
+    view = new Uint8Array(m);
+    for (var i = 0; i < m; ++i) {
+      view[i] = msg[i];
+    }
   }
 
-  var deg = k - 1;
-
-  var cs = new Uint8Array(deg + 1);
+  var cs = new Uint8Array(k);
   var ret = new Array(n);
+
+  var polyAt = function(x) {
+    var sum = gf28.ZERO;
+    for (var j = 0; j < cs.length; ++j) {
+      var term = gf28.mul(cs[j], gf28.pow(x, j));
+      sum = gf28.add(sum, term);
+    }
+    return sum;
+  }
+
   for (var i = 0; i < n; ++i) {
-    ret[i] = new Uint8Array(1 + msg.length);
+    ret[i] = new Uint8Array(1 + m);
     ret[i][0] = i + 1;
   }
 
-  for (var i = 0; i < msg.length; ++i) {
-    cs.set(opt_rng['getRandomBytes'](deg), 1);
-    cs[0] = msg[i];
-    var polyAt = function(x) {
-      var sum = gf28.ZERO;
-      for (var j = 0; j < cs.length; ++j) {
-        var term = gf28.mul(cs[j], gf28.pow(x, j));
-        sum = gf28.add(sum, term);
-      }
-      return sum;
-    }
+  for (var i = 0; i < m; ++i) {
+    cs.set(rng['getRandomBytes'](k - 1), 1);
+    cs[0] = view[i];
     for (var j = 0; j < n; ++j) {
       ret[j][1 + i] = polyAt(j + 1);
     }
@@ -143,7 +155,7 @@ ssss.MathRng.prototype.getRandomBytes = function(n) {
 }
 
 /**
- * @typedef {ArrayBuffer}
+ * @typedef {Uint8Array}
  */
 ssss.Key;
 
