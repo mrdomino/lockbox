@@ -24,7 +24,7 @@ var table = new goog.testing.PerformanceTable(
 function testSplitLargeBuf() {
   var m = 1024 * 32;
   var msg = new ArrayBuffer(m);
-  var view = new Float64Array(msg);
+  var view = new Float32Array(msg);
   var randomMock = new goog.testing.PseudoRandom(0, true);
   for (var i = 0; i < m; ++i) {
     view[i] = Math.random();
