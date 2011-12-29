@@ -1,0 +1,46 @@
+<!doctype html>
+<title>ssss performance tests</title>
+<script src="../closure-library/closure/goog/base.js"></script>
+<script src="ssss-compiled.js"></script>
+<script src="deps.js"></script>
+<script>
+  //goog.require('ssss');
+  goog.require('goog.testing.PerformanceTable');
+  goog.require('goog.testing.PerformanceTimer');
+  goog.require('goog.testing.PseudoRandom');
+  goog.require('goog.testing.jsunit');
+</script>
+<div id="p"></div>
+<script>
+
+if (typeof ssss == 'undefined') {
+  alert("ssss is not defined; ssss-compiled.js may not have been generated. " +
+        "Try running 'make'.");
+}
+
+var table = new goog.testing.PerformanceTable(
+    goog.dom.getElement('p'), new goog.testing.PerformanceTimer(5));
+
+function testSplitLargeBuf() {
+  var m = 1024 * 32;
+  var msg = new ArrayBuffer(m);
+  var view = new Float64Array(msg);
+  var randomMock = new goog.testing.PseudoRandom(0, true);
+  for (var i = 0; i < m; ++i) {
+    view[i] = Math.random();
+  }
+
+  table.run(function() {
+    ssss.split(msg, 3, 5);
+  }, 'split ' + m + ' bytes');
+  randomMock.uninstall();
+}
+
+function testSplitManyKeys() {
+  var msg = "secret";
+  var randomMock = new goog.testing.PseudoRandom(0, true);
+  table.run(function() {
+    ssss.split(msg, 255);
+  }, 'split into 255 keys');
+}
+</script>
