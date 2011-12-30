@@ -1,6 +1,7 @@
 goog.provide('ssss');
 
 goog.require('gf28');
+goog.require('goog.asserts');
 
 
 /**
@@ -21,31 +22,26 @@ ssss.split = function(msg, k, opt_n, opt_rng) {
   var n = (typeof opt_n == 'undefined') ? k : opt_n;
   var rng = (typeof opt_rng == 'undefined') ? new ssss.MathRng : opt_rng;
 
-  if (k <= 1) {
-    throw "Threshold must be at least 2";
-  }
-  if (n < k) {
-    throw "Must have at least k total keys";
-  }
-  if (n > gf28.MASK) {
-    throw "Can't make more than " + gf28.MASK + " distinct keys.";
-  }
+  goog.asserts.assert(k >= 2, "Threshold must be at least 2.");
+  goog.asserts.assert(n >= k, "Must have at least k total keys.");
+  goog.asserts.assert(n <= gf28.MASK,
+                      "Can't make more than %s distinct keys.", gf28.MASK);
 
   var m, view;
   if (msg instanceof ArrayBuffer) {
     view = new Uint8Array(msg);
     m = view.length;
-  } else if (typeof msg == 'string') {
-    m = msg.length;
-    view = new Uint8Array(m);
-    for (var i = 0; i < m; ++i) {
-      view[i] = msg.charCodeAt(i);
-    }
   } else {
     m = msg.length;
     view = new Uint8Array(m);
+    var ptFn = typeof msg == 'string'
+        ? function(i) { return msg.charCodeAt(i); }
+        : function(i) { return msg[i]; };
     for (var i = 0; i < m; ++i) {
-      view[i] = msg[i];
+      var b = ptFn(i);
+      goog.asserts.assert(gf28.isElem(b),
+                          "%s at msg[%s] is out of range.", b, i);
+      view[i] = b;
     }
   }
 

@@ -233,7 +233,13 @@ function testCombineWithBadMessages() {
 }
 
 function testSplitWithStrangeMessages() {
-  assertTrue("not implemented", false);
+  assertCombinedEquals(new Uint8Array, ssss.split("", 3));
+  var arr_toobig = [3, 5, 256];
+  assertThrows(goog.partial(ssss.split, arr_toobig, 2));
+  var arr_neg = [3, -1, 2];
+  assertThrows(goog.partial(ssss.split, arr_neg, 2));
+  var unicode_str = "\u2018te\ufffdst\u2019\ufffd";
+  assertThrows(goog.partial(ssss.split, unicode_str, 2));
 }
 
 // TODO:
