@@ -142,7 +142,7 @@ ssss.Rng = function() {}
 
 /**
  * @param {number} n Number of random bytes to return.
- * @return {TypedArray} Buffer containing random bytes.
+ * @return {Uint8Array} Buffer containing random bytes.
  */
 ssss.Rng.prototype.getRandomBytes = goog.abstractMethod;
 
