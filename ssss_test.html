@@ -33,10 +33,6 @@ function sameBytes(expected, actual) {
   return true;
 }
 
-Uint8Array.prototype.toString = function() {
-  return goog.crypt.base64.encodeByteArray(this);
-}
-
 var nullRng = function() {}
 goog.inherits(nullRng, ssss.MathRng);
 nullRng.prototype.getRandomBytes = function(n) {
