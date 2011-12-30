@@ -23,8 +23,8 @@ ssss.split = function(msg, k, opt_n, opt_rng) {
   var n = (typeof opt_n == 'undefined') ? k : opt_n;
   var rng = (typeof opt_rng == 'undefined') ? new ssss.MathRng : opt_rng;
 
-  goog.asserts.assert(k >= 2, "Threshold must be at least 2.");
-  goog.asserts.assert(n >= k, "Must have at least k total keys.");
+  goog.asserts.assert(k >= 2, 'Threshold must be at least 2.');
+  goog.asserts.assert(n >= k, 'Must have at least k total keys.');
   goog.asserts.assert(n <= gf28.MASK,
                       "Can't make more than %s distinct keys.", gf28.MASK);
 
@@ -41,7 +41,7 @@ ssss.split = function(msg, k, opt_n, opt_rng) {
     for (var i = 0; i < m; ++i) {
       var b = ptFn(i);
       goog.asserts.assert(gf28.isElem(b),
-                          "%s at msg[%s] is out of range.", b, i);
+                          '%s at msg[%s] is out of range.', b, i);
       view[i] = b;
     }
   }
