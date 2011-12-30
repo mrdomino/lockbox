@@ -81,9 +81,12 @@ ssss.split = function(msg, k, opt_n, opt_rng) {
  * own verification mechanism, e.g. signing the message prior to encryption.
  *
  * @param {Array.<ssss.Key>} keys Array of keys to recombine.
+ * @param {number=} opt_k Optional threshold value; if passed, only
+ *     combinations of up to opt_k keys will be tried.
  * @return {Uint8Array} The decoded message.
  */
-ssss.combine = function(keys) {
+ssss.combine = function(keys, opt_k) {
+  var k = (typeof opt_k == 'undefined') ? keys.length : opt_k;
   goog.asserts.assert(keys.length > 0, "Empty array passed.");
   goog.asserts.assert(
     goog.array.every(keys, function(key) {
@@ -91,10 +94,10 @@ ssss.combine = function(keys) {
     }), "Unequal key lengths.");
   var m = keys[0].length - 1;
   var ret = new Uint8Array(m);
-  var pts = new Array(keys.length);
+  var pts = new Array(k);
 
   for (var i = 0; i < m; ++i) {
-    for (var j = 0; j < keys.length; ++j) {
+    for (var j = 0; j < k; ++j) {
       pts[j] = {'x': keys[j][0], 'y': keys[j][i + 1]};
     }
     ret[i] = ssss.combinePt_(pts);

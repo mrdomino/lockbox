@@ -253,6 +253,12 @@ function testSplitWithStrangeMessages() {
   assertThrows(goog.partial(ssss.split, unicode_str, 2));
 }
 
+function testCombineWithThreshold() {
+  var out = ssss.split(secret_arr, 3, 5);
+  assertTrue(sameBytes(secret_arr, ssss.combine(out, 3)));
+  assertFalse(sameBytes(secret_arr, ssss.combine(out, 2)));
+}
+
 // TODO:
 // produced keys are random (inductive proof)
 
