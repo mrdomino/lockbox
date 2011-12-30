@@ -84,13 +84,11 @@ ssss.split = function(msg, k, opt_n, opt_rng) {
  * @return {Uint8Array} The decoded message.
  */
 ssss.combine = function(keys) {
+  goog.asserts.assert(keys.length > 0, "Empty array passed.");
   goog.asserts.assert(
     goog.array.every(keys, function(key) {
       return key.length == keys[0].length;
-    }));
-  if (keys.length == 0) {
-    return new Uint8Array(0);
-  }
+    }), "Unequal key lengths.");
   var m = keys[0].length - 1;
   var ret = new Uint8Array(m);
   var pts = new Array(keys.length);

@@ -240,7 +240,7 @@ function testCombineWithBadMessages() {
   assertThrows(goog.partial(ssss.combine, combine_different_lengths));
   var combine_empty = [new Uint8Array, new Uint8Array];
   assertThrows(goog.partial(ssss.combine, combine_empty));
-  assertTrue(sameBytes(new Uint8Array, ssss.combine([])));
+  assertThrows(goog.partial(ssss.combine, []));
 }
 
 function testSplitWithStrangeMessages() {
