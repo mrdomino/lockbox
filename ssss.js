@@ -89,7 +89,7 @@ ssss.combine = function(keys) {
       return key.length == keys[0].length;
     }));
   if (keys.length == 0) {
-    return new Uint8Array;
+    return new Uint8Array(0);
   }
   var m = keys[0].length - 1;
   var ret = new Uint8Array(m);
