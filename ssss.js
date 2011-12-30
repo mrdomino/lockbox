@@ -1,6 +1,7 @@
 goog.provide('ssss');
 
 goog.require('gf28');
+goog.require('goog.array');
 goog.require('goog.asserts');
 
 
@@ -83,6 +84,13 @@ ssss.split = function(msg, k, opt_n, opt_rng) {
  * @return {Uint8Array} The decoded message.
  */
 ssss.combine = function(keys) {
+  goog.asserts.assert(
+    goog.array.every(keys, function(key) {
+      return key.length == keys[0].length;
+    }));
+  if (keys.length == 0) {
+    return new Uint8Array;
+  }
   var m = keys[0].length - 1;
   var ret = new Uint8Array(m);
   var pts = new Array(keys.length);
@@ -118,6 +126,7 @@ ssss.combinePt_ = function(pts) {
     for (var j = 0; j < pts.length; ++j) {
       if (i == j) continue;
       var xj = pts[j]['x'];
+      goog.asserts.assert(xi != xj);
       prod = gf28.mul(prod, gf28.div(gf28.sub(x, xj), gf28.sub(xi, xj)));
     }
     sum = gf28.add(sum, gf28.mul(pts[i]['y'], prod));

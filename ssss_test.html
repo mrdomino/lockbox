@@ -229,7 +229,18 @@ function testCombineCombines() {
 }
 
 function testCombineWithBadMessages() {
-  assertTrue("not implemented", false);
+  var out = ssss.split("tsst", 3, 5);
+  var combine_dup = [out[0], out[0], out[1]];
+  assertThrows(goog.partial(ssss.combine, combine_dup));
+  var combine_different_lengths = [
+    new Uint8Array(5),
+    new Uint8Array(6)
+  ];
+  combine_different_lengths[1][0] = 1;
+  assertThrows(goog.partial(ssss.combine, combine_different_lengths));
+  var combine_empty = [new Uint8Array, new Uint8Array];
+  assertThrows(goog.partial(ssss.combine, combine_empty));
+  assertTrue(sameBytes(new Uint8Array, ssss.combine([])));
 }
 
 function testSplitWithStrangeMessages() {
