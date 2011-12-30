@@ -1,0 +1,24 @@
+<!doctype html>
+<title>comb test</title>
+<script src="../closure-library/closure/goog/base.js"></script>
+<script src="deps.js"></script>
+<script>
+  goog.require('comb');
+  goog.require('goog.array');
+  goog.require('goog.testing.jsunit');
+</script>
+<body>
+<script>
+
+function assertSameElements(expected, input) {
+  assertEquals("lengths differ", expected.length, input.length);
+  for (var i = 0; i < expected.length; ++i) {
+    assertEquals("elements differ", expected[i], input[i]);
+  }
+}
+
+function testGivesEmptyListForRZero() {
+  assertSameElements([], comb.combinations([1, 2, 3]));
+}
+
+</script>

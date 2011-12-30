@@ -4,7 +4,7 @@ CLOSURE_BUILD=$(CLOSURE_LIBRARY)/closure/bin/build
 CLOSUREBUILDER=$(CLOSURE_BUILD)/closurebuilder.py
 DEPSWRITER=$(CLOSURE_BUILD)/depswriter.py
 PREFIX=../../../lockbox
-JS=gf28.js ssss.js
+JS=gf28.js ssss.js comb.js
 
 all: gf28-compiled.js ssss-compiled.js deps.js
 
