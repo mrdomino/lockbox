@@ -96,8 +96,8 @@ function testSplitConsumesEntropy() {
 
 function testSsssKeyInterface() {
   var out = ssss.split(secret, 3, 5);
-  assertEquals(1, ssss.getX(out[0]));
-  assertEquals(2, ssss.getX(out[1]));
+  assertEquals(1, ssss.Key.getX(out[0]));
+  assertEquals(2, ssss.Key.getX(out[1]));
 }
 
 function testSplitWorksWithArrayBuffers() {
@@ -134,8 +134,10 @@ function testSplitWithThreshold2() {
 
   for (var i = 0; i < secret.length; ++i) {
     assertEquals(secret.charCodeAt(i),
-                 decodeByte(ssss.getX(out[0]), ssss.getY(out[0], i),
-                            ssss.getX(out[1]), ssss.getY(out[1], i)));
+                 decodeByte(ssss.Key.getX(out[0]),
+                            ssss.Key.getY(out[0], i),
+                            ssss.Key.getX(out[1]),
+                            ssss.Key.getY(out[1], i)));
   }
 }
 
@@ -185,7 +187,7 @@ function testGivesEncodedMessageWithOneRng() {
   }
   for (var i = 0; i < output.length; ++i) {
     for (var l = 0; l < secret.length; ++l) {
-      assertEquals(polyAt(ssss.getX(output[i]), secret.charCodeAt(l)),
+      assertEquals(polyAt(ssss.Key.getX(output[i]), secret.charCodeAt(l)),
                    output[i][l + 1]);
     }
   }

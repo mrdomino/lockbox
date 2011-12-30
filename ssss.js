@@ -162,13 +162,13 @@ ssss.MathRng.prototype.getRandomBytes = function(n) {
 /**
  * @typedef {Uint8Array}
  */
-ssss.Key;
+ssss.Key = {};
 
 /**
  * @param {ssss.Key} key
  * @return {gf28.elem} x-coord of points encoded by key
  */
-ssss.getX = function(key) {
+ssss.Key.getX = function(key) {
   var k = new Uint8Array(key);
   return k[0];
 }
@@ -178,7 +178,7 @@ ssss.getX = function(key) {
  * @param {number} idx
  * @return {gf28.elem} y-coord of point at idx in key
  */
-ssss.getY = function(key, idx) {
+ssss.Key.getY = function(key, idx) {
   var k = new Uint8Array(key);
   return k[idx + 1];
 }
@@ -188,5 +188,5 @@ goog.exportProperty(ssss.MathRng.prototype, 'getRandomBytes',
                     ssss.MathRng.prototype.getRandomBytes);
 goog.exportSymbol('ssss.combine', ssss.combine);
 goog.exportSymbol('ssss.split', ssss.split);
-goog.exportSymbol('ssss.getX', ssss.getX);
-goog.exportSymbol('ssss.getY', ssss.getY);
+goog.exportSymbol('ssss.Key.getX', ssss.Key.getX);
+goog.exportSymbol('ssss.Key.getY', ssss.Key.getY);
