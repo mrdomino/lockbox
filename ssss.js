@@ -1,8 +1,10 @@
 goog.provide('ssss');
 
+goog.require('comb');
 goog.require('gf28');
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('goog.functions');
 
 
 /**
@@ -83,10 +85,25 @@ ssss.split = function(msg, k, opt_n, opt_rng) {
  * @param {Array.<ssss.Key>} keys Array of keys to recombine.
  * @param {number=} opt_k Optional threshold value; if passed, only
  *     combinations of up to opt_k keys will be tried.
+ * @param {function(Uint8Array): boolean=} opt_pred Optional predicate function
+ *     used to validate keys. If passed, then the returned result must have
+ *     opt_pred(result) == true. Different combinations of keys will be tried
+ *     until one is found; if none exists, then this will throw an error.
  * @return {Uint8Array} The decoded message.
  */
-ssss.combine = function(keys, opt_k) {
+ssss.combine = function(keys, opt_k, opt_pred) {
   var k = (typeof opt_k == 'undefined') ? keys.length : opt_k;
+  var pred = (typeof opt_pred == 'undefined') ? goog.functions.TRUE
+                                              : opt_pred;
+  if (k != keys.length) {
+    var combs = comb.combinations(keys, k);
+    for (var i = 0; i < combs.length; ++i) {
+      var result = ssss.combine(combs[i]);
+      if (pred(result)) {
+        return result;
+      }
+    }
+  }
   goog.asserts.assert(keys.length > 0, "Empty array passed.");
   goog.asserts.assert(
     goog.array.every(keys, function(key) {
