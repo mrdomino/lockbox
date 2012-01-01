@@ -22,3 +22,5 @@ comb.combinations = function(arr, r) {
   }
   return goog.array.concat(combs_without_symbol, combs_with_symbol);
 }
+
+goog.exportSymbol("comb.combinations", comb.combinations);

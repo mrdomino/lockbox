@@ -6,7 +6,7 @@ DEPSWRITER=$(CLOSURE_BUILD)/depswriter.py
 PREFIX=../../../lockbox
 JS=gf28.js ssss.js comb.js
 
-all: gf28-compiled.js ssss-compiled.js deps.js
+all: comb-compiled.js gf28-compiled.js ssss-compiled.js deps.js
 
 %-compiled.js: %.js
 	$(CLOSUREBUILDER) --root=$(CLOSURE_LIBRARY) --root=. --namespace=$* --output_mode=compiled --compiler_jar=$(CLOSURE_COMPILER_JAR) --compiler_flags=--compilation_level=ADVANCED_OPTIMIZATIONS --compiler_flags=--warning_level=VERBOSE --compiler_flags=--output_wrapper="(function(){%output%})()" > $@
