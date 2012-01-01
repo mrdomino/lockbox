@@ -21,11 +21,8 @@ function assertSameElementsRecursive(expected, input) {
   }
 }
 
-function testGivesEmptyListForRZero() {
+function testGivesTrivialCombinations() {
   assertSameElementsRecursive([], comb.combinations([1, 2, 3], 0));
-}
-
-function testGivesOriginalListForREqualToLength() {
   assertSameElementsRecursive([[1, 2, 3]], comb.combinations([1, 2, 3], 3));
 }
 
