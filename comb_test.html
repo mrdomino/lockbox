@@ -10,15 +10,23 @@
 <body>
 <script>
 
-function assertSameElements(expected, input) {
+function assertSameElementsRecursive(expected, input) {
   assertEquals("lengths differ", expected.length, input.length);
   for (var i = 0; i < expected.length; ++i) {
-    assertEquals("elements differ", expected[i], input[i]);
+    if (expected[i] instanceof Array) {
+      assertSameElementsRecursive(expected[i], input[i]);
+    } else {
+      assertEquals("elements differ", expected[i], input[i]);
+    }
   }
 }
 
 function testGivesEmptyListForRZero() {
-  assertSameElements([], comb.combinations([1, 2, 3]));
+  assertSameElementsRecursive([], comb.combinations([1, 2, 3], 0));
+}
+
+function testGivesOriginalListForREqualToLength() {
+  assertSameElementsRecursive([[1, 2, 3]], comb.combinations([1, 2, 3], 3));
 }
 
 </script>

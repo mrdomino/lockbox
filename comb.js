@@ -1,6 +1,9 @@
 goog.provide('comb');
 
 
-comb.combinations = function() {
-  return [];
+comb.combinations = function(arr, r) {
+  if (r == 0) {
+    return [];
+  }
+  return [arr];
 }
