@@ -1,0 +1,26 @@
+<!doctype html>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<title>SSSS app</title>
+<script src="app-compiled.js"></script>
+<div>
+  <div>
+    <label for="k">K</label>
+    <input type="text" id="k" value="3">
+    <label for="n">N</label>
+    <input type="text" id="n" value="5">
+    <label for="input">Input</label>
+    <textarea id="input">default message</textarea>
+    <input type="button" value="Split" id="split">
+  </div>
+  <div id="split-output"></div>
+</div>
+<div>
+  <div>
+    <textarea id="keys"></textarea>
+    <input type="button" value="Combine" id="combine">
+  </div>
+  <div id="combine-output"></div>
+</div>
+<script>
+  app.run();
+</script>

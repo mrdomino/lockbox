@@ -1,0 +1,22 @@
+<!doctype html>
+<title>app test</title>
+<script src="../closure-library/closure/goog/base.js"></script>
+<script src="deps.js"></script>
+<script>
+  goog.require('app');
+  goog.require('goog.testing.jsunit');
+</script>
+<body>
+<script>
+
+function testAppDoesThings() {
+  var str = "012345BC";
+  assertEquals(str, app.parseUint8Array(str).toString());
+  var arr = new Uint8Array(8);
+  for (var i = 0; i < arr.length; ++i) {
+    arr[i] = Math.floor(Math.random() * 256);
+  }
+  assertSameElements(arr, app.parseUint8Array(arr.toString()));
+}
+
+</script>
