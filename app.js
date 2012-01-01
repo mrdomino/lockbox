@@ -36,7 +36,10 @@ app.run = function() {
   });
   goog.events.listen($('combine'), goog.events.EventType.CLICK, function(e) {
     var keys = goog.array.map($('keys').value.split("\n"), app.parseUint8Array);
-    goog.dom.setTextContent($('combine-output'), goog.crypt.base64.decodeString(ssss.combine(keys).toString()));
+    var out = goog.dom.createDom('pre');
+    goog.dom.setTextContent(out, goog.crypt.base64.decodeString(ssss.combine(keys).toString()));
+    goog.dom.removeChildren($('combine-output'));
+    goog.dom.appendChild($('combine-output'), out);
   });
 }
 

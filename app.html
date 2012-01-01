@@ -12,6 +12,9 @@
   }
   h1, h2 { border-bottom: 1px solid black }
   label, input { display: block }
+  #combine-output {
+    font-family: monospace
+  }
 </style>
 <h1>SSSS Lockbox</h1>
 <div id="split-div">
@@ -30,6 +33,7 @@
 <div id="combine-div">
   <h2>Combine</h2>
   <div>
+    <label for="keys">Keys</label>
     <textarea id="keys"></textarea>
     <input type="button" value="Combine" id="combine">
   </div>
@@ -41,5 +45,9 @@
   <p>Source at <a href="https://github.com/mrdomino/lockbox">github.com/mrdomino/lockbox</a>.
 </div>
 <script>
-  app.run();
+if (typeof app == "undefined") {
+  alert("app is not defined; app-compiled.js may not have been generated. " +
+        "Try running `make`.");
+}
+app.run();
 </script>
