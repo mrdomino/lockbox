@@ -54,7 +54,7 @@ try {
   try {
     var errmsg = e + '.';
     if (e instanceof ReferenceError && e.message.indexOf('app') > -1) {
-      errmsg += ' app-compiled.js may need to be built; try running `make`.';
+      errmsg += ' app-compiled.js may need to be built; try running make.';
     }
     document.getElementById('err-div').appendChild(
         document.createTextNode(errmsg));
