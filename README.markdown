@@ -7,9 +7,11 @@ Sharing Scheme][ssss]. It can be used to split a message like:
 
 into keys like:
 
-    ASxzW03VbzyeGtO3gxtz44JIg+3QM1I=
-    AsReGfonfe20rQrlt1ZdTnk6qnYbxTI=
-    A5xFJ5eCc6JZwLYgUG1H3tsURvSplxI=
+    ATm+26TTvy0w0Q+DIcxd7reSLlo1SzU=
+    Au7ZBDUrwM/1Jq+N7uUBVBOT7QXMNfw=
+    A6MPurGIHpG2gM98qwk1yYRnrDCbH7s=
+    BF0XpwrGPhZi1fKRbbe5PUaRdrsjyXM=
+    BRDBGY5l4Eghc5JgKFuNoNFlN4504zQ=
 
 that can be recombined to produce the original message.
 
