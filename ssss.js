@@ -128,7 +128,7 @@ ssss.combine = function(keys, opt_k, opt_pred) {
  * @private
  */
 ssss.combinePt_ = function(pts) {
-  // We use LaGrange interpoluation to determine p(x) and evaluate it at 0 to
+  // We use LaGrange interpolation to determine p(x) and evaluate it at 0 to
   // retrieve the original byte.  The LaGrange polynomial over the points
   // ((x_0, y_0), ..., (x_n, y_n)) is
   //   p(x) = y_0 l_0(x) + ... + y_n l_n(x)
