@@ -22,6 +22,9 @@ app.parseUint8Array = function(str) {
 app.run = function() {
   var $ = goog.dom.getElement;
   goog.events.listen($('split'), goog.events.EventType.CLICK, function(e) {
+    if (typeof _gaq != 'undefined') {
+      _gaq.push(['_trackEvent', 'ssss', 'split']);
+    }
     var k = parseInt($('k').value, 10);
     var n = parseInt($('n').value, 10);
     var input = $('input').value;
@@ -35,6 +38,9 @@ app.run = function() {
     });
   });
   goog.events.listen($('combine'), goog.events.EventType.CLICK, function(e) {
+    if (typeof _gaq != 'undefined') {
+      _gaq.push(['_trackEvent', 'ssss', 'combine']);
+    }
     var keys = goog.array.filter(
         goog.array.map($('keys').value.split("\n"), app.parseUint8Array),
         function(arr) { return arr.length; });
