@@ -47,15 +47,17 @@
 </div>
 <script>
 try {
+  document.getElementById('err-div').style.display = 'none';
   app.run();
 } catch(e) {
   try {
+    var errdiv = document.getElementById('err-div');
     var errmsg = typeof e.message == 'undefined' ? e : e.message;
     if (e instanceof ReferenceError && errmsg.indexOf('app') > -1) {
       errmsg += '. app-compiled.js may need to be built; try running make.';
     }
-    document.getElementById('err-div').appendChild(
-        document.createTextNode(errmsg));
+    errdiv.appendChild(document.createTextNode(errmsg));
+    errdiv.style.display = 'block';
   } catch(e1) {
     alert('Something went really really wrong: ' + e1 +
           '\nOriginal error: ' + e);
