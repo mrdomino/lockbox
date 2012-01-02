@@ -21,8 +21,8 @@ To try it out, first make sure that the following hold:
   of the [closure-compiler][] jar.
 
 Then, run `make` and open `app.html` in your browser. Try
-pasting any two of the keys above into the combine
-textarea (separated by newlines) and pressing "Combine".
+pasting any two of the keys above into the combine textarea
+(separated by newlines) and pressing &ldquo;Combine&rdquo;.
 
 ## TODO
 
