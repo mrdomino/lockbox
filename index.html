@@ -52,14 +52,15 @@ try {
   app.run();
 } catch(e) {
   try {
-    var errmsg = e + '.';
-    if (e instanceof ReferenceError && e.message.indexOf('app') > -1) {
-      errmsg += ' app-compiled.js may need to be built; try running make.';
+    var errmsg = typeof e.message == 'undefined' ? e : e.message;
+    if (e instanceof ReferenceError && errmsg.indexOf('app') > -1) {
+      errmsg += '. app-compiled.js may need to be built; try running make.';
     }
     document.getElementById('err-div').appendChild(
         document.createTextNode(errmsg));
   } catch(e1) {
-    alert('Something went really really wrong: ' + e1);
+    alert('Something went really really wrong: ' + e1 +
+          '\nOriginal error: ' + e);
   }
 }
 </script>
