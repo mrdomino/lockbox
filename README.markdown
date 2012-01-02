@@ -24,6 +24,9 @@ Then, run `make` and open `app.html` in your browser. Try
 pasting any two of the keys above into the combine textarea
 (separated by newlines) and pressing &ldquo;Combine&rdquo;.
 
+A precompiled version of `app.html` exists on this project’s [github
+page][github-page].
+
 ## TODO
 
 - Implement message verification, probably by embedding
@@ -38,3 +41,4 @@ pasting any two of the keys above into the combine textarea
 
 [closure-library]:  http://code.google.com/p/closure-library  'Closure Library'
 [closure-compiler]: http://code.google.com/p/closure-compiler 'Closure Compiler'
+[github-page]:      http://mrdomino.github.com/lockbox/       'SSSS Lockbox'
