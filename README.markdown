@@ -1,7 +1,7 @@
 # SSSS Lockbox
 
-This is a distributed lockbox based on Shamir&rsquo;s Secret
-Sharing Scheme. It can be used to split a message like:
+This is a distributed lockbox based on [Shamir&rsquo;s Secret
+Sharing Scheme][ssss]. It can be used to split a message like:
 
     the password is foobar
 
@@ -42,3 +42,5 @@ page][github-page].
 [closure-library]:  http://code.google.com/p/closure-library  'Closure Library'
 [closure-compiler]: http://code.google.com/p/closure-compiler 'Closure Compiler'
 [github-page]:      http://mrdomino.github.com/lockbox/       'SSSS Lockbox'
+[ssss]:             https://en.wikipedia.org/wiki/Shamir's_Secret_Sharing
+    "Shamir&rsquo;s Secret Sharing Scheme"
