@@ -18,7 +18,7 @@ To try it out, first make sure that the following hold:
 - `../closure-library` (relative to the checkout path) points to a checkout of [closure-library][].
 - `../closure-compiler/compiler.jar` points to a copy of the [Closure compiler][closure-compiler] jar.
 
-Then, run `make` and open [app.html](app.html) in your browser. Try pasting any two
+Then, run `make` and open `app.html` in your browser. Try pasting any two
 of the keys above into the combine textarea (separated by newlines) and pressing
 "Combine".
 
