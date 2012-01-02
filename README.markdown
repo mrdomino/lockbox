@@ -18,16 +18,16 @@ that can be recombined to produce the original message.
 To try it out, first make sure that the following hold:
 
 - `../closure-library` (relative to the checkout
-  path) points to a checkout of [closure-library][].
+  path) points to a checkout of [Closure library][].
 - `../closure-compiler/compiler.jar` points to a copy
-  of the [closure-compiler][] jar.
+  of the [Closure compiler][] jar.
 
 Then, run `make` and open `app.html` in your browser. Try
 pasting any two of the keys above into the combine textarea
 (separated by newlines) and pressing &ldquo;Combine&rdquo;.
 
-A precompiled version of `app.html` exists on this project’s [github
-page][github-page].
+A precompiled version of `app.html` exists
+on this project&rsquo;s [github page][].
 
 ## TODO
 
@@ -41,8 +41,8 @@ page][github-page].
   which is compiled away by the Closure compiler.
 - Add nicer documentation.
 
-[closure-library]:  http://code.google.com/p/closure-library  'Closure Library'
-[closure-compiler]: http://code.google.com/p/closure-compiler 'Closure Compiler'
-[github-page]:      http://mrdomino.github.com/lockbox/       'SSSS Lockbox'
+[closure library]:  http://code.google.com/p/closure-library  "Closure Library"
+[closure compiler]: http://code.google.com/p/closure-compiler "Closure Compiler"
+[github page]:      http://mrdomino.github.com/lockbox/       "SSSS Lockbox"
 [ssss]:             https://en.wikipedia.org/wiki/Shamir's_Secret_Sharing
     "Shamir's Secret Sharing Scheme"
