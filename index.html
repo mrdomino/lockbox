@@ -3,12 +3,17 @@
 <title>SSSS Lockbox</title>
 <script src="app-compiled.js"></script>
 <style>
+  html { background: #000; color: #fff; border-color: #fff }
+  a { color: #0cf }
+  textarea, input { color: #fff; background: #000 }
+  #err-div { color: #f00 }
   html { font-family: sans-serif }
   body { max-width: 6in; margin: auto }
-  h1, h2 { border-bottom: 1px solid black }
+  h1, h2 { border-bottom: 1px solid }
   label, input { display: block }
 </style>
 <h1><abbr title="Shamir’s Secret Sharing Scheme">SSSS</abbr> Lockbox</h1>
+<div id="err-div"></div>
 <div id="split-div">
   <h2>Split</h2>
   <div>
@@ -41,9 +46,18 @@
   <p>Written by <a href="https://www.google.com/profiles/mrdomino">mrdomino</a>.
 </div>
 <script>
-if (typeof app == "undefined") {
-  alert("app is not defined; app-compiled.js may not have been generated. " +
-        "Try running `make`.");
+try {
+  app.run();
+} catch(e) {
+  try {
+    var errmsg = e + '.';
+    if (e instanceof ReferenceError && e.message.indexOf('app') > -1) {
+      errmsg += ' app-compiled.js may need to be built; try running `make`.';
+    }
+    document.getElementById('err-div').appendChild(
+        document.createTextNode(errmsg));
+  } catch(e1) {
+    alert('Something went really really wrong: ' + e1);
+  }
 }
-app.run();
 </script>
