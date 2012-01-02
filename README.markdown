@@ -43,4 +43,4 @@ page][github-page].
 [closure-compiler]: http://code.google.com/p/closure-compiler 'Closure Compiler'
 [github-page]:      http://mrdomino.github.com/lockbox/       'SSSS Lockbox'
 [ssss]:             https://en.wikipedia.org/wiki/Shamir's_Secret_Sharing
-    "Shamir&rsquo;s Secret Sharing Scheme"
+    "Shamir's Secret Sharing Scheme"
