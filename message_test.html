@@ -1,0 +1,22 @@
+<!doctype html>
+<title>message test</title>
+<script src="../closure-library/closure/goog/base.js"></script>
+<script src="deps.js"></script>
+<script>
+  goog.require('message');
+
+  goog.require('goog.functions');
+  goog.require('goog.testing.jsunit');
+</script>
+<body>
+<script>
+
+function testDecodeEncodeIsIdentity() {
+  var enc_dec = goog.functions.compose(message.decode, message.encode);
+  assertEquals("", enc_dec(""));
+  assertEquals("secret", enc_dec("secret"));
+  assertEquals("bob dole", enc_dec("bob dole"));
+  assertThrows(goog.partial(message.encode, null));
+}
+
+</script>
