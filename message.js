@@ -11,7 +11,7 @@ goog.require('goog.crypt.Sha1');
 message.Message;
 
 /**
- * @param {string} str String to encode.
+ * @param {!string} str String to encode.
  * @return {message.Message} Encoded message.
  */
 message.encode = function(str) {
@@ -31,7 +31,9 @@ message.encode = function(str) {
  * @return {string} Decoded string.
  */
 message.decode = function(bytes) {
-  goog.asserts.assert(message.verify(bytes), "Invalid message!");
+  if (!message.verify(bytes)) {
+    throw new Error("Invalid message");
+  }
   var msg = new Uint8Array(bytes, 21);
   return message.utf8Decode_(message.bytesToString_(msg));
 }
