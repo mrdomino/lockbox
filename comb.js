@@ -17,7 +17,7 @@ comb.combinations = function(arr, r) {
   var combs_without_symbol = comb.combinations(arr_without_symbol, r);
   var combs_with_symbol = comb.combinations(arr_without_symbol, r - 1);
   for (var i = 0; i < combs_with_symbol.length; ++i) {
-    combs_with_symbol[i] = goog.array.concat([symbol], combs_with_symbol[i]);
+    combs_with_symbol[i].push(symbol);
   }
   return goog.array.concat(combs_without_symbol, combs_with_symbol);
 }
