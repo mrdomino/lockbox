@@ -33,6 +33,8 @@ on this project&rsquo;s [github page][].
 
 - Implement message verification, probably by embedding
   a hash or checksum in the generated keys somehow.
+- Come up with a reasonable text representation for keys and implement
+  formatting/parsing for it.
 - Use a more robust source of entropy than `Math.random`. Ideally also
   provide an option for truly paranoid people to manually enter dice rolls.
 - Make the code work without `TypedArray` (for rhino and older browsers).
