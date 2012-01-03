@@ -31,6 +31,7 @@ on this project&rsquo;s [github page][].
 
 ## TODO
 
+- Improve error handling/display in app.
 - Come up with a reasonable text representation for keys and implement
   formatting/parsing for it.
 - Use a more robust source of entropy than `Math.random`. Ideally also
