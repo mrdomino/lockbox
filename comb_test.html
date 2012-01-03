@@ -5,6 +5,7 @@
 <script>
   goog.require('comb');
   goog.require('goog.array');
+  goog.require('goog.functions');
   goog.require('goog.testing.jsunit');
 </script>
 <body>
@@ -40,6 +41,32 @@ function testGivesThreeCombinations() {
   assertSameElementsRecursive(
       [[1, 2, 3], [1, 2, 4], [2, 3, 4], [1, 3, 4]],
       comb.combinations([1, 2, 3, 4], 3));
+}
+
+function testCombinationSuchThat() {
+  var sumIs = function(sum, arr) {
+    return sum == goog.array.reduce(
+        arr, function(acc, n) { return acc + n; }, 0);
+  }
+  assertTrue(sumIs(4, [1, 2, 1]));
+  assertFalse(sumIs(5, [1, 2, 1]));
+
+  assertTrue(sumIs(5,
+             comb.combinationSuchThat(goog.partial(sumIs, 5), [2, 3], 2)));
+  assertTrue(sumIs(4,
+             comb.combinationSuchThat(goog.partial(sumIs, 4),
+                                      [1,2,3,4,5,6,7,8,9,10], 2)));
+  assertEquals(undefined, comb.combinationSuchThat(goog.partial(sumIs, 4),
+                                                   [1, 2, 4], 2));
+  assertSameElementsRecursive([], comb.combinationSuchThat(goog.functions.TRUE,
+                                                           [], 0));
+  var long_arr = [];
+  for (var i = 0; i < 100; ++i) {
+  long_arr[i] = i;
+  }
+  assertTrue(sumIs(4,
+      comb.combinationSuchThat(
+          goog.partial(sumIs, 4), long_arr, 2)));
 }
 
 </script>
