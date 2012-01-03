@@ -40,6 +40,7 @@ on this project&rsquo;s [github page][].
 - Throw errors rather than using `goog.asserts.assert`,
   which is compiled away by the Closure compiler.
 - Add nicer documentation.
+- Spread it around.
 
 
 [closure library]:  http://code.google.com/p/closure-library  "Closure Library"
