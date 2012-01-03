@@ -31,8 +31,6 @@ on this project&rsquo;s [github page][].
 
 ## TODO
 
-- Implement message verification, probably by embedding
-  a hash or checksum in the generated keys somehow.
 - Come up with a reasonable text representation for keys and implement
   formatting/parsing for it.
 - Use a more robust source of entropy than `Math.random`. Ideally also
