@@ -5,6 +5,7 @@
 <script>
   goog.require('ssss');
   goog.require('gf28');
+  goog.require('goog.functions');
   goog.require('goog.crypt.base64');
   goog.require('goog.testing.jsunit');
 </script>
@@ -269,6 +270,9 @@ function testCombineWithPredicate() {
   out[1][4] = 0x50;
   assertFalse(sameBytes(secret_arr, ssss.combine(out, 3)));
   assertTrue(sameBytes(secret_arr, ssss.combine(out, 3, pred)));
+
+  pred = goog.functions.FALSE;
+  assertEquals(null, ssss.combine(out, 3, pred));
 }
 
 // TODO:

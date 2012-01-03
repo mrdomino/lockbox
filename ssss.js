@@ -96,13 +96,9 @@ ssss.combine = function(keys, opt_k, opt_pred) {
   var pred = (typeof opt_pred == 'undefined') ? goog.functions.TRUE
                                               : opt_pred;
   if (k != keys.length) {
-    var combs = comb.combinations(keys, k);
-    for (var i = 0; i < combs.length; ++i) {
-      var result = ssss.combine(combs[i]);
-      if (pred(result)) {
-        return result;
-      }
-    }
+    var c = /** @type {Array.<ssss.Key>} */ comb.combinationSuchThat(
+        goog.functions.compose(pred, ssss.combine), keys, k);
+    return (c == null) ? null : ssss.combine(c);
   }
   goog.asserts.assert(keys.length > 0, "Empty array passed.");
   goog.asserts.assert(
