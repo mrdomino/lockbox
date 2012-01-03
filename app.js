@@ -47,6 +47,9 @@ app.run = function() {
         goog.array.map($('combine-keys').value.split("\n"),
                        app.parseUint8Array),
         function(arr) { return arr.length; });
+    if (!(k > 0)) {
+      k = keys.length;
+    }
     var msg = message.decode(
         ssss.combine(keys, k, function(arr) {
           return message.verify(arr.buffer);
