@@ -24,7 +24,8 @@ function assertSameElementsRecursive(expected, input) {
 }
 
 function testGivesTrivialCombinations() {
-  assertSameElementsRecursive([], comb.combinations([1, 2, 3], 0));
+  assertSameElementsRecursive([[]], comb.combinations([1, 2, 3], 0));
+  assertSameElementsRecursive([[]], comb.combinations([], 0));
   assertSameElementsRecursive([[1, 2, 3]], comb.combinations([1, 2, 3], 3));
 
   assertSameElementsRecursive([[1], [2], [3]], comb.combinations([1, 2, 3], 1));
