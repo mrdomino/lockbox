@@ -39,12 +39,13 @@
 <div id="split-div">
   <h2>Split</h2>
   <div>
-    <label for="k">Minimum number of keys required to recombine the message</label>
-    <input type="text" id="k" value="3">
-    <label for="n">Total number of keys to produce</label>
-    <input type="text" id="n" value="5">
-    <label for="input">Message</label>
-    <textarea id="input">default message</textarea>
+    <label for="split-k">Minimum number of keys required to recombine the
+      message</label>
+    <input type="text" id="split-k" value="3">
+    <label for="split-n">Total number of keys to produce</label>
+    <input type="text" id="split-n" value="5">
+    <label for="split-input">Message</label>
+    <textarea id="split-input">default message</textarea>
     <input type="button" value="Split" id="split">
   </div>
   <div id="split-output"></div>
@@ -52,8 +53,10 @@
 <div id="combine-div">
   <h2>Combine</h2>
   <div>
-    <label for="keys">Keys</label>
-    <textarea id="keys"></textarea>
+    <label for="combine-k">Minimum number of keys required</label>
+    <input type="text" id="combine-k" value="3">
+    <label for="combine-keys">Keys</label>
+    <textarea id="combine-keys"></textarea>
     <input type="button" value="Combine" id="combine">
   </div>
   <div id="combine-output"></div>
