@@ -16,7 +16,17 @@ function testDecodeEncodeIsIdentity() {
   assertEquals("", enc_dec(""));
   assertEquals("secret", enc_dec("secret"));
   assertEquals("bob dole", enc_dec("bob dole"));
+  assertEquals("‘te�st’", enc_dec("‘te�st’"));
   assertThrows(goog.partial(message.encode, null));
+}
+
+function testEncodeYieldsArrayBuffer() {
+  var encoded = message.encode("secret message");
+  var view = new Uint8Array(encoded);
+  assertTrue(view.length > 0);
+  var x = view[view.length - 1];
+  view[view.length - 1] ^= 0x01;
+  assertNotEquals(x, view[view.length - 1]);
 }
 
 </script>
