@@ -29,4 +29,27 @@ function testEncodeYieldsArrayBuffer() {
   assertNotEquals(x, view[view.length - 1]);
 }
 
+function testVerifyDetectsMessageChanges() {
+  var encoded = message.encode("secret message");
+  assertTrue(message.verify(encoded));
+  var view = new Uint8Array(encoded);
+  view[view.length - 1] ^= 0x01;
+  assertFalse(message.verify(encoded));
+  assertThrows(goog.partial(message.decode, encoded));
+}
+
+function testEncodeEmbedsVersion() {
+  var encoded = message.encode("kwijibo");
+  var view = new Uint8Array(encoded);
+  assertEquals(0x01, view[0]);
+}
+
+function testVerifyRejectsBadVersions() {
+  var encoded = message.encode("bob");
+  assertTrue(message.verify(encoded));
+  var view = new Uint8Array(encoded);
+  view[0] = 0x02;
+  assertFalse(message.verify(encoded));
+}
+
 </script>
