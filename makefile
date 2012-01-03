@@ -27,5 +27,8 @@ all: $(JSOUT) deps.js
 deps.js: $(JS)
 	$(DEPSWRITER) --root_with_prefix='. $(PREFIX)' > $@
 
+app-compiled.js: ssss.js message.js
+ssss-compiled.js: comb.js gf28.js rng.js
+
 clean:
 	-rm $(JSOUT) deps.js
