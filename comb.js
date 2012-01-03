@@ -22,20 +22,29 @@ comb.combinations = function(arr, r) {
   return goog.array.concat(combs_without_symbol, combs_with_symbol);
 }
 
+/**
+ * @param {function(goog.array.ArrayLike): boolean} pred Predicate to test
+ *     combinations against.
+ * @param {goog.array.ArrayLike} arr Array to try combinations from.
+ * @param {number} r Size of combinations to try.
+ * @param {goog.array.ArrayLike=} opt_accum Optional accumulator; don't use
+ *     this.
+ * @return {goog.array.ArrayLike} Combination such that pred holds.
+ */
 comb.combinationSuchThat = function(pred, arr, r, opt_accum) {
   var accum = (typeof opt_accum == 'undefined') ? [] : opt_accum;
   if (r == 0) {
-    return pred(accum) ? accum : undefined;
+    return pred(accum) ? accum : null;
   }
   if (goog.array.isEmpty(arr)) {
-    return undefined;
+    return null;
   }
 
   var symbol = arr[0];
   var arr_without_symbol = goog.array.slice(arr, 1);
 
   var candidate = comb.combinationSuchThat(pred, arr_without_symbol, r, accum);
-  if (typeof candidate != 'undefined') {
+  if (candidate != null) {
     return candidate;
   }
 
