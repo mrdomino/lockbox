@@ -5,6 +5,7 @@
 <script>
   goog.require('ssss');
   goog.require('gf28');
+  goog.require('rng');
   goog.require('goog.functions');
   goog.require('goog.testing.jsunit');
 </script>
@@ -34,13 +35,13 @@ function sameBytes(expected, actual) {
 }
 
 var nullRng = function() {}
-goog.inherits(nullRng, ssss.MathRng);
+goog.inherits(nullRng, rng.MathRng);
 nullRng.prototype.getRandomBytes = function(n) {
   return new Uint8Array(n);
 }
 
 var oneRng = function() {}
-goog.inherits(oneRng, ssss.MathRng);
+goog.inherits(oneRng, rng.MathRng);
 oneRng.prototype.getRandomBytes = function(n) {
   var ret = new Uint8Array(n);
   for (var i = 0; i < n; ++i) {
@@ -74,20 +75,20 @@ function testSplitProducesNKeys() {
 
 function testSplitConsumesEntropy() {
   var mockRng = function() {
-    ssss.MathRng.call(this);
+    rng.MathRng.call(this);
     this.bytesReturned = 0;
   }
-  goog.inherits(mockRng, ssss.MathRng);
+  goog.inherits(mockRng, rng.MathRng);
   mockRng.prototype.getRandomBytes = function(n) {
     this.bytesReturned += n;
     return mockRng.superClass_.getRandomBytes.call(this, n);
   }
-  var rng = new mockRng;
-  ssss.split(secret, 3, 5, rng);
-  assertEquals(secret.length * 2, rng.bytesReturned);
-  rng = new mockRng;
-  ssss.split(secret, 4, 5, rng);
-  assertEquals(secret.length * 3, rng.bytesReturned);
+  var gen = new mockRng;
+  ssss.split(secret, 3, 5, gen);
+  assertEquals(secret.length * 2, gen.bytesReturned);
+  gen = new mockRng;
+  ssss.split(secret, 4, 5, gen);
+  assertEquals(secret.length * 3, gen.bytesReturned);
 }
 
 function testSsssKeyInterface() {
@@ -139,13 +140,13 @@ function testSplitWithThreshold2() {
 
 function testThrowsErrorOnRngWithInsufficientRandomness() {
   var mockRng = function() {}
-  goog.inherits(mockRng, ssss.MathRng);
+  goog.inherits(mockRng, rng.MathRng);
   mockRng.prototype.getRandomBytes = function(n) {
     throw "Not enough entropy!";
   }
-  var rng = new mockRng;
+  var gen = new mockRng;
 
-  assertThrows(goog.partial(ssss.split, secret, 3, 5, rng));
+  assertThrows(goog.partial(ssss.split, secret, 3, 5, gen));
 }
 
 function testKeysHaveCorrectLength() {

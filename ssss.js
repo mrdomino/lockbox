@@ -5,6 +5,7 @@ goog.require('gf28');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.functions');
+goog.require('rng');
 
 
 /**
@@ -16,14 +17,14 @@ goog.require('goog.functions');
  * @param {number} k Minimum number of keys needed to recombine msg.
  * @param {number=} opt_n Total number of keys to produce (if unspecified,
  *     n=k).
- * @param {ssss.Rng=} opt_rng Entropy source for the algorithm (if
+ * @param {rng.Rng=} opt_gen Entropy source for the algorithm (if
  *     unspecified, use Math.random).
  * @return {Array.<ssss.Key>} n keys of which any k can reconstruct msg, for
  *     which any k - 1 or fewer are indistinguishable from random.
  */
-ssss.split = function(msg, k, opt_n, opt_rng) {
+ssss.split = function(msg, k, opt_n, opt_gen) {
   var n = (typeof opt_n == 'undefined') ? k : opt_n;
-  var rng = (typeof opt_rng == 'undefined') ? new ssss.MathRng : opt_rng;
+  var gen = (typeof opt_gen == 'undefined') ? new rng.MathRng : opt_gen;
 
   goog.asserts.assert(k >= 2, 'Threshold must be at least 2.');
   goog.asserts.assert(n >= k, 'Must have at least k total keys.');
@@ -66,7 +67,7 @@ ssss.split = function(msg, k, opt_n, opt_rng) {
   }
 
   for (var i = 0; i < m; ++i) {
-    cs.set(rng['getRandomBytes'](k - 1), 1);
+    cs.set(gen['getRandomBytes'](k - 1), 1);
     cs[0] = view[i];
     for (var j = 0; j < n; ++j) {
       ret[j][1 + i] = polyAt(j + 1);
@@ -149,36 +150,6 @@ ssss.combinePt_ = function(pts) {
 }
 
 /**
- * Interface to an RNG that allows extracting known quantities of entropy.
- * @interface
- */
-ssss.Rng = function() {}
-
-/**
- * @param {number} n Number of random bytes to return.
- * @return {Uint8Array} Buffer containing random bytes.
- */
-ssss.Rng.prototype.getRandomBytes = goog.abstractMethod;
-
-/**
- * Rng using Math.random as entropy source.
- * @constructor
- * @implements ssss.Rng
- */
-ssss.MathRng = function() {}
-
-/**
- * @inheritDoc
- */
-ssss.MathRng.prototype.getRandomBytes = function(n) {
-  var ret = new Uint8Array(n);
-  for (var i = 0; i < n; ++i) {
-    ret[i] = Math.floor(Math.random() * 256);
-  }
-  return ret;
-}
-
-/**
  * @typedef {Uint8Array}
  */
 ssss.Key = {};
@@ -202,9 +173,6 @@ ssss.Key.getY = function(key, idx) {
   return k[idx + 1];
 }
 
-goog.exportSymbol('ssss.MathRng', ssss.MathRng);
-goog.exportProperty(ssss.MathRng.prototype, 'getRandomBytes',
-                    ssss.MathRng.prototype.getRandomBytes);
 goog.exportSymbol('ssss.combine', ssss.combine);
 goog.exportSymbol('ssss.split', ssss.split);
 goog.exportSymbol('ssss.Key.getX', ssss.Key.getX);
