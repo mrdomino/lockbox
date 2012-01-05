@@ -5,12 +5,52 @@
 <script>
   goog.require('ssss');
   goog.require('gf28');
+  goog.require('rng');
+  goog.require('goog.functions');
   goog.require('goog.testing.jsunit');
 </script>
 <body>
 <script>
 
 var secret = "secret message";
+var secret_arr = new Uint8Array(secret.length);
+for (var i = 0; i < secret.length; ++i) {
+  secret_arr[i] = secret.charCodeAt(i);
+}
+
+function sameBytes(expected, actual) {
+  if (!actual instanceof Uint8Array) {
+    actual = new Uint8Array(actual);
+  }
+  if (expected.length != actual.length) {
+    return false;
+  }
+  var n = expected.length;
+  for (var i = 0; i < n; ++i) {
+    if (expected[i] != actual[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+var nullRng = function() {}
+goog.inherits(nullRng, rng.MathRng);
+nullRng.prototype.getRandomValues = function(view) {
+  var n = view.length;
+  for (var i = 0; i < n; ++i) {
+    view[i] = 0;
+  }
+}
+
+var oneRng = function() {}
+goog.inherits(oneRng, rng.MathRng);
+oneRng.prototype.getRandomValues = function(view) {
+  var n = view.length;
+  for (var i = 0; i < n; ++i) {
+    view[i] = 1;
+  }
+}
 
 function testSplitThresholdArgument() {
   assertThrows("throws on k = 1",
@@ -25,6 +65,8 @@ function testSplitTotalArgument() {
                goog.partial(ssss.split, secret, 2, 1));
   assertThrows("throws on n < k",
                goog.partial(ssss.split, secret, 5, 2));
+  assertThrows("throws on n > gf28.MASK",
+               goog.partial(ssss.split, secret, 5, gf28.MASK + 1));
   ssss.split(secret, 3, 5);  // should not throw error
 }
 
@@ -35,26 +77,41 @@ function testSplitProducesNKeys() {
 
 function testSplitConsumesEntropy() {
   var mockRng = function() {
-    ssss.MathRng.call(this);
+    rng.MathRng.call(this);
     this.bytesReturned = 0;
   }
-  goog.inherits(mockRng, ssss.MathRng);
-  mockRng.prototype.getRandomBytes = function(n) {
-    this.bytesReturned += n;
-    return mockRng.superClass_.getRandomBytes.call(this, n);
+  goog.inherits(mockRng, rng.MathRng);
+  mockRng.prototype.getRandomValues = function(view) {
+    this.bytesReturned += view.length;
+    return mockRng.superClass_.getRandomValues.call(this, view);
   }
-  var rng = new mockRng;
-  ssss.split(secret, 3, 5, rng);
-  assertEquals(secret.length * 2, rng.bytesReturned);
-  rng = new mockRng;
-  ssss.split(secret, 4, 5, rng);
-  assertEquals(secret.length * 3, rng.bytesReturned);
+  var gen = new mockRng;
+  ssss.split(secret, 3, 5, gen);
+  assertEquals(secret.length * 2, gen.bytesReturned);
+  gen = new mockRng;
+  ssss.split(secret, 4, 5, gen);
+  assertEquals(secret.length * 3, gen.bytesReturned);
 }
 
 function testSsssKeyInterface() {
   var out = ssss.split(secret, 3, 5);
-  assertEquals(1, ssss.getX(out[0]));
-  assertEquals(2, ssss.getX(out[1]));
+  assertEquals(1, ssss.Key.getX(out[0]));
+  assertEquals(2, ssss.Key.getX(out[1]));
+}
+
+function testSplitWorksWithArrayBuffers() {
+  var buf = new ArrayBuffer(4);
+  var arr = new Uint8Array(buf);
+  arr[0] = 0x99;
+  arr[1] = 0x10;
+  arr[2] = 0xff;
+  arr[3] = 0x00;
+  ssss.split(buf, 2);  // should not throw error
+}
+
+function testSplitWorksWithByteArrays() {
+  var msg = [0x99, 0x10, 0xff];
+  ssss.split(msg, 3);  // should not throw error
 }
 
 function testSplitWithThreshold2() {
@@ -76,19 +133,166 @@ function testSplitWithThreshold2() {
 
   for (var i = 0; i < secret.length; ++i) {
     assertEquals(secret.charCodeAt(i),
-                 decodeByte(ssss.getX(out[0]), ssss.getY(out[0], i),
-                            ssss.getX(out[1]), ssss.getY(out[1], i)));
+                 decodeByte(ssss.Key.getX(out[0]),
+                            ssss.Key.getY(out[0], i),
+                            ssss.Key.getX(out[1]),
+                            ssss.Key.getY(out[1], i)));
   }
 }
 
+function testThrowsErrorOnRngWithInsufficientRandomness() {
+  var mockRng = function() {}
+  goog.inherits(mockRng, rng.MathRng);
+  mockRng.prototype.getRandomValues = function(view) {
+    throw "Not enough entropy!";
+  }
+  var gen = new mockRng;
+
+  assertThrows(goog.partial(ssss.split, secret, 3, 5, gen));
+}
+
+function testKeysHaveCorrectLength() {
+  var out = ssss.split(secret, 8, 12);
+  for (var i = 0; i < 12; ++i) {
+    assertEquals(secret.length + 1, out[i].length);
+  }
+}
+
+function testGivesOriginalMessageWithNullRng() {
+  var rng = new nullRng;
+  var view = new Uint8Array(1);
+  rng.getRandomValues(view);
+  assertEquals(0, view[0]);
+
+  // With the null RNG, all our polynomials are p(x) = c_0, so all our points
+  // are (x, c_0).
+  var output = ssss.split(secret, 3, 5, rng);
+  for (var i = 0; i < output.length; ++i) {
+    assertTrue(sameBytes(secret_arr, output[i].subarray(1)));
+  }
+}
+
+function testGivesEncodedMessageWithOneRng() {
+  var rng = new oneRng;
+  var view = new Uint8Array(5);
+  rng.getRandomValues(view);
+  assertEquals(1, view[4]);
+
+  // With OneRng, each polynomial is p(x) = c_0 + x + ... + x^k, so each point
+  // is (x, c_0 XOR x XOR ... XOR x^k).
+  var output = ssss.split(secret, 3, 5, rng);
+  var polyAt = function(x, c0) {
+    var ret = c0;
+    for (var j = 1; j < 3; ++j) {
+      ret = gf28.add(ret, gf28.pow(x, j));
+    }
+    return ret;
+  }
+  for (var i = 0; i < output.length; ++i) {
+    for (var l = 0; l < secret.length; ++l) {
+      assertEquals(polyAt(ssss.Key.getX(output[i]), secret.charCodeAt(l)),
+                   output[i][l + 1]);
+    }
+  }
+}
+
+function testUsesRngGetIfNoRngPassed() {
+  var oldRngGet = rng.getRng;
+  var called = false;
+  rng.getRng = function() {
+    called = true;
+    return oldRngGet();
+  }
+  ssss.split(secret, 2);
+  assertTrue('rng.getRng called', called);
+}
+
+function testCombineWithInsufficientPointsDoesNotGiveSecret() {
+  var out = ssss.split(secret, 3, 5);
+  var combined = ssss.combine([out[0], out[2]]);
+  assertFalse(sameBytes(combined, secret_arr));
+
+  out = ssss.split(secret, 8, 12);
+  combined = ssss.combine(out.slice(1, 8));
+  assertFalse(sameBytes(combined, secret_arr));
+}
+
+function testCombineCombinesSingleByte() {
+  var out = ssss.split('a', 3);
+  var combined = ssss.combine(out);
+  assertEquals('a'.charCodeAt(0), combined[0]);
+
+  out = ssss.split('c', 5, 12);
+  combined = ssss.combine([out[0], out[2], out[4], out[6], out[10]]);
+  assertEquals('c'.charCodeAt(0), combined[0]);
+
+  out = ssss.split('b', 4, 12);
+  combined = ssss.combine(out);
+  assertEquals('b'.charCodeAt(0), combined[0]);
+}
+
+function assertCombinedEquals(expected, arr) {
+  var combined = ssss.combine(arr);
+  assertTrue("Expected:\n" + expected + "\nActual:\n" + combined + "\narr:\n" +
+             arr.join("\n"),
+             sameBytes(expected, ssss.combine(arr)));
+}
+
+function testCombineCombines() {
+  assertCombinedEquals(secret_arr, ssss.split(secret, 4));
+}
+
+function testCombineWithBadMessages() {
+  var out = ssss.split("tsst", 3, 5);
+  var combine_dup = [out[0], out[0], out[1]];
+  assertThrows(goog.partial(ssss.combine, combine_dup));
+  var combine_different_lengths = [
+    new Uint8Array(5),
+    new Uint8Array(6)
+  ];
+  combine_different_lengths[1][0] = 1;
+  assertThrows(goog.partial(ssss.combine, combine_different_lengths));
+  var combine_empty = [new Uint8Array, new Uint8Array];
+  assertThrows(goog.partial(ssss.combine, combine_empty));
+  assertThrows(goog.partial(ssss.combine, []));
+}
+
+function testSplitWithStrangeMessages() {
+  assertCombinedEquals(new Uint8Array, ssss.split("", 3));
+  var arr_toobig = [3, 5, 256];
+  assertThrows(goog.partial(ssss.split, arr_toobig, 2));
+  var arr_neg = [3, -1, 2];
+  assertThrows(goog.partial(ssss.split, arr_neg, 2));
+  var unicode_str = "\u2018te\ufffdst\u2019\ufffd";
+  assertThrows(goog.partial(ssss.split, unicode_str, 2));
+}
+
+function testCombineWithThreshold() {
+  var out = ssss.split(secret_arr, 3, 5);
+  assertTrue(sameBytes(secret_arr, ssss.combine(out, 3)));
+  assertFalse(sameBytes(secret_arr, ssss.combine(out, 2)));
+}
+
+function testCombineWithPredicate() {
+  var out = ssss.split(secret_arr, 3, 4, new oneRng);
+  var pred = function(arr) {
+    return sameBytes(secret_arr, arr);
+  }
+  assertTrue(sameBytes(secret_arr, ssss.combine(out, 3, pred)));
+
+  // Introduce some corruption.
+  out[1][1] = 0xff;
+  out[1][2] = 0x90;
+  out[1][3] = 0x00;
+  out[1][4] = 0x50;
+  assertFalse(sameBytes(secret_arr, ssss.combine(out, 3)));
+  assertTrue(sameBytes(secret_arr, ssss.combine(out, 3, pred)));
+
+  pred = goog.functions.FALSE;
+  assertEquals(null, ssss.combine(out, 3, pred));
+}
+
 // TODO:
-// split with threshold >2
-// behavior on n > 255
 // produced keys are random (inductive proof)
-// keys have expected length
-// combine combines
-// behavior given rng with insufficient randomness
-// behavior on weird messages
-// behavior on large m
 
 </script>

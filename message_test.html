@@ -1,0 +1,55 @@
+<!doctype html>
+<title>message test</title>
+<script src="../closure-library/closure/goog/base.js"></script>
+<script src="deps.js"></script>
+<script>
+  goog.require('message');
+
+  goog.require('goog.functions');
+  goog.require('goog.testing.jsunit');
+</script>
+<body>
+<script>
+
+function testDecodeEncodeIsIdentity() {
+  var enc_dec = goog.functions.compose(message.decode, message.encode);
+  assertEquals("", enc_dec(""));
+  assertEquals("secret", enc_dec("secret"));
+  assertEquals("bob dole", enc_dec("bob dole"));
+  assertEquals("‘te�st’", enc_dec("‘te�st’"));
+  assertThrows(goog.partial(message.encode, null));
+}
+
+function testEncodeYieldsArrayBuffer() {
+  var encoded = message.encode("secret message");
+  var view = new Uint8Array(encoded);
+  assertTrue(view.length > 0);
+  var x = view[view.length - 1];
+  view[view.length - 1] ^= 0x01;
+  assertNotEquals(x, view[view.length - 1]);
+}
+
+function testVerifyDetectsMessageChanges() {
+  var encoded = message.encode("secret message");
+  assertTrue(message.verify(encoded));
+  var view = new Uint8Array(encoded);
+  view[view.length - 1] ^= 0x01;
+  assertFalse(message.verify(encoded));
+  assertThrows(goog.partial(message.decode, encoded));
+}
+
+function testEncodeEmbedsVersion() {
+  var encoded = message.encode("kwijibo");
+  var view = new Uint8Array(encoded);
+  assertEquals(0x01, view[0]);
+}
+
+function testVerifyRejectsBadVersions() {
+  var encoded = message.encode("bob");
+  assertTrue(message.verify(encoded));
+  var view = new Uint8Array(encoded);
+  view[0] = 0x02;
+  assertFalse(message.verify(encoded));
+}
+
+</script>

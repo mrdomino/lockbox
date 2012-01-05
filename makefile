@@ -1,18 +1,34 @@
-CLOSURE_LIBRARY=../closure-library
-CLOSURE_COMPILER_JAR=../closure-compiler/compiler.jar
-CLOSURE_BUILD=$(CLOSURE_LIBRARY)/closure/bin/build
+# Edit these to match your environment.
+LIBRARY_ROOT=../closure-library
+COMPILER_JAR=../closure-compiler/compiler.jar
+# PREFIX is relative to $(LIBRARY_ROOT)/closure
+PREFIX=../../../lockbox
+COMPILER_FLAGS=--compilation_level=ADVANCED_OPTIMIZATIONS --warning_level=VERBOSE --output_wrapper="(function(){%output%})()" --externs=$(EXTERNS)
+
+# Don't touch these unless you're modifying the source.
+MODULES=app gf28 ssss comb message rng
+EXTERNS=externs.js
+
+# You should almost never have any reason to touch anything below this line. ###
+
+CLOSURE_BUILD=$(LIBRARY_ROOT)/closure/bin/build
 CLOSUREBUILDER=$(CLOSURE_BUILD)/closurebuilder.py
 DEPSWRITER=$(CLOSURE_BUILD)/depswriter.py
-PREFIX=../../../lockbox
-JS=gf28.js ssss.js
+JS=$(foreach mod, $(MODULES), $(mod).js)
+JSOUT=$(foreach mod, $(MODULES), $(mod)-compiled.js)
 
-all: gf28-compiled.js ssss-compiled.js deps.js
+all: $(JSOUT) deps.js
 
-%-compiled.js: %.js
-	$(CLOSUREBUILDER) --root=$(CLOSURE_LIBRARY) --root=. --namespace=$* --output_mode=compiled --compiler_jar=$(CLOSURE_COMPILER_JAR) --compiler_flags=--compilation_level=ADVANCED_OPTIMIZATIONS --compiler_flags=--warning_level=VERBOSE --compiler_flags=--output_wrapper="(function(){%output%})()" > $@
+%-compiled.js: %.js externs.js
+	$(CLOSUREBUILDER) --root=$(LIBRARY_ROOT) --root=. --namespace=$* \
+		--output_mode=compiled --compiler_jar=$(COMPILER_JAR) \
+		$(foreach flag,$(COMPILER_FLAGS),--compiler_flag=$(flag)) > $@
 
 deps.js: $(JS)
 	$(DEPSWRITER) --root_with_prefix='. $(PREFIX)' > $@
 
+app-compiled.js: ssss.js message.js
+ssss-compiled.js: comb.js gf28.js rng.js
+
 clean:
-	rm *-compiled.js deps.js
+	-rm $(JSOUT) deps.js

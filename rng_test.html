@@ -1,0 +1,38 @@
+<!doctype html>
+<title>rng test</title>
+<script src="../closure-library/closure/goog/base.js"></script>
+<script src="deps.js"></script>
+<script>
+  goog.require('rng');
+
+  goog.require('goog.array');
+  goog.require('goog.testing.jsunit');
+  goog.require('goog.testing.MockRandom');
+</script>
+<body>
+<script>
+
+var mockRandom = new goog.testing.MockRandom, mathRng = new rng.MathRng;
+
+function testMathRngUsesMathRandom() {
+  mockRandom.inject(goog.array.map([5, 6, 7], function(x) { return x / 256; }));
+  mockRandom.install();
+  var bytes = new Uint8Array(3);
+  mathRng.getRandomValues(bytes);
+  assertEquals(5, bytes[0]);
+  assertEquals(6, bytes[1]);
+  assertEquals(7, bytes[2]);
+}
+
+function testGetRngReturnsCryptoIfAvailable() {
+  assertEquals(crypto, rng.getRng());
+}
+
+function testGetRngReturnsMathRngIfCryptoMissing() {
+  var oldGetRandomValues = crypto.getRandomValues;
+  crypto.getRandomValues = null;
+  assertTrue(rng.getRng() instanceof rng.MathRng);
+  crypto.getRandomValues = oldGetRandomValues;
+}
+
+</script>

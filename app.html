@@ -1,0 +1,92 @@
+<!doctype html>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<title>SSSS Lockbox</title>
+<script src="app-compiled.js"></script>
+<style>
+  #err-div { background-color: #ffc; color: #f00; padding: 0.5em;
+    border: 1px dotted #f00 }
+  html { font-family: sans-serif }
+  body { max-width: 6in; margin: auto }
+  h1, h2 { border-bottom: 1px solid }
+  label, input { display: block }
+</style>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-28049294-1']);
+  _gaq.push(['_setDomainName', 'github.com']);
+  _gaq.push(['_setAllowLinker', true]);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<body>
+
+<h1><abbr title="Shamir’s Secret Sharing Scheme">SSSS</abbr> Lockbox</h1>
+<div id="warn-div">
+  <h2>WARNING</h2>
+  <p>This is pre-alpha. Also, hand-done crypto. <strong>DON’T USE IT FOR
+    ANYTHING IMPORTANT.</strong>
+</div>
+<div id="err-div">
+  <noscript><p>This page requires JavaScript to run.</p></noscript>
+</div>
+<div id="split-div">
+  <h2>Split</h2>
+  <div>
+    <label for="split-k">Minimum number of keys required to recombine the
+      message</label>
+    <input type="text" id="split-k" value="3">
+    <label for="split-n">Total number of keys to produce</label>
+    <input type="text" id="split-n" value="5">
+    <label for="split-input">Message</label>
+    <textarea id="split-input">default message</textarea>
+    <input type="button" value="Split" id="split">
+  </div>
+  <div id="split-output"></div>
+</div>
+<div id="combine-div">
+  <h2>Combine</h2>
+  <div>
+    <label for="combine-k">Minimum number of keys required (defaults to number
+      of keys entered)</label>
+    <input type="text" id="combine-k">
+    <label for="combine-keys">Keys</label>
+    <textarea id="combine-keys"></textarea>
+    <input type="button" value="Combine" id="combine">
+  </div>
+  <div id="combine-output"></div>
+</div>
+<div id="about-div">
+  <h2>About</h2>
+  <p>This is a pure JavaScript implementation of
+    <a href="https://en.wikipedia.org/wiki/Shamir's_Secret_Sharing">Shamir’s
+      Secret Sharing</a>. There is no server needed; all crypto is done in your
+    browser. See the <a href="https://github.com/mrdomino/lockbox">github
+      project page</a> for more information.
+  <p>Written by <a href="https://www.google.com/profiles/mrdomino">mrdomino</a>.
+</div>
+<script>
+try {
+  document.getElementById('err-div').style.display = 'none';
+  app.run();
+} catch(e) {
+  try {
+    var errdiv = document.getElementById('err-div');
+    var errmsg = typeof e.message == 'undefined' ? e : e.message;
+    if (e instanceof ReferenceError && errmsg.indexOf('app') > -1) {
+      errmsg += '. app-compiled.js may need to be built; try running make.';
+    }
+    errdiv.appendChild(document.createTextNode(errmsg));
+    errdiv.style.display = 'block';
+  } catch(e1) {
+    alert('Something went really really wrong: ' + e1 +
+          '\nOriginal error: ' + e);
+  }
+}
+</script>
