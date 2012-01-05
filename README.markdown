@@ -34,8 +34,7 @@ on this project&rsquo;s [github page][].
 - Improve error handling/display in app.
 - Come up with a reasonable text representation for keys and implement
   formatting/parsing for it.
-- Use a more robust source of entropy than `Math.random`. Ideally also
-  provide an option for truly paranoid people to manually enter dice rolls.
+- Provide an option for truly paranoid people to manually enter entropy.
 - Make the code work without `TypedArray` (for rhino and older browsers).
 - Use GF(2<sup>m</sup>) for larger m to allow more keys.
 - Throw errors rather than using `goog.asserts.assert`,
