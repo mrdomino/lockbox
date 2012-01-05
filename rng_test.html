@@ -24,4 +24,15 @@ function testMathRngUsesMathRandom() {
   assertEquals(7, bytes[2]);
 }
 
+function testGetRngReturnsCryptoIfAvailable() {
+  assertEquals(crypto, rng.getRng());
+}
+
+function testGetRngReturnsMathRngIfCryptoMissing() {
+  var oldGetRandomValues = crypto.getRandomValues;
+  crypto.getRandomValues = null;
+  assertTrue(rng.getRng() instanceof rng.MathRng);
+  crypto.getRandomValues = oldGetRandomValues;
+}
+
 </script>
