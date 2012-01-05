@@ -67,7 +67,7 @@ ssss.split = function(msg, k, opt_n, opt_gen) {
   }
 
   for (var i = 0; i < m; ++i) {
-    cs.set(gen['getRandomBytes'](k - 1), 1);
+    gen['getRandomValues'](cs.subarray(1));
     cs[0] = view[i];
     for (var j = 0; j < n; ++j) {
       ret[j][1 + i] = polyAt(j + 1);

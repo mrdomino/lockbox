@@ -36,18 +36,20 @@ function sameBytes(expected, actual) {
 
 var nullRng = function() {}
 goog.inherits(nullRng, rng.MathRng);
-nullRng.prototype.getRandomBytes = function(n) {
-  return new Uint8Array(n);
+nullRng.prototype.getRandomValues = function(view) {
+  var n = view.length;
+  for (var i = 0; i < n; ++i) {
+    view[i] = 0;
+  }
 }
 
 var oneRng = function() {}
 goog.inherits(oneRng, rng.MathRng);
-oneRng.prototype.getRandomBytes = function(n) {
-  var ret = new Uint8Array(n);
+oneRng.prototype.getRandomValues = function(view) {
+  var n = view.length;
   for (var i = 0; i < n; ++i) {
-    ret[i] = 1;
+    view[i] = 1;
   }
-  return ret;
 }
 
 function testSplitThresholdArgument() {
@@ -79,9 +81,9 @@ function testSplitConsumesEntropy() {
     this.bytesReturned = 0;
   }
   goog.inherits(mockRng, rng.MathRng);
-  mockRng.prototype.getRandomBytes = function(n) {
-    this.bytesReturned += n;
-    return mockRng.superClass_.getRandomBytes.call(this, n);
+  mockRng.prototype.getRandomValues = function(view) {
+    this.bytesReturned += view.length;
+    return mockRng.superClass_.getRandomValues.call(this, view);
   }
   var gen = new mockRng;
   ssss.split(secret, 3, 5, gen);
@@ -141,7 +143,7 @@ function testSplitWithThreshold2() {
 function testThrowsErrorOnRngWithInsufficientRandomness() {
   var mockRng = function() {}
   goog.inherits(mockRng, rng.MathRng);
-  mockRng.prototype.getRandomBytes = function(n) {
+  mockRng.prototype.getRandomValues = function(view) {
     throw "Not enough entropy!";
   }
   var gen = new mockRng;
@@ -158,7 +160,9 @@ function testKeysHaveCorrectLength() {
 
 function testGivesOriginalMessageWithNullRng() {
   var rng = new nullRng;
-  assertEquals(0, rng.getRandomBytes(1)[0]);
+  var view = new Uint8Array(1);
+  rng.getRandomValues(view);
+  assertEquals(0, view[0]);
 
   // With the null RNG, all our polynomials are p(x) = c_0, so all our points
   // are (x, c_0).
@@ -170,7 +174,9 @@ function testGivesOriginalMessageWithNullRng() {
 
 function testGivesEncodedMessageWithOneRng() {
   var rng = new oneRng;
-  assertEquals(1, rng.getRandomBytes(5)[4]);
+  var view = new Uint8Array(5);
+  rng.getRandomValues(view);
+  assertEquals(1, view[4]);
 
   // With OneRng, each polynomial is p(x) = c_0 + x + ... + x^k, so each point
   // is (x, c_0 XOR x XOR ... XOR x^k).
