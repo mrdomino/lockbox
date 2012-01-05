@@ -24,7 +24,7 @@ goog.require('rng');
  */
 ssss.split = function(msg, k, opt_n, opt_gen) {
   var n = (typeof opt_n == 'undefined') ? k : opt_n;
-  var gen = (typeof opt_gen == 'undefined') ? new rng.MathRng : opt_gen;
+  var gen = (typeof opt_gen == 'undefined') ? rng.getRng() : opt_gen;
 
   goog.asserts.assert(k >= 2, 'Threshold must be at least 2.');
   goog.asserts.assert(n >= k, 'Must have at least k total keys.');

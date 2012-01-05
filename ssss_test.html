@@ -196,6 +196,17 @@ function testGivesEncodedMessageWithOneRng() {
   }
 }
 
+function testUsesRngGetIfNoRngPassed() {
+  var oldRngGet = rng.getRng;
+  var called = false;
+  rng.getRng = function() {
+    called = true;
+    return oldRngGet();
+  }
+  ssss.split(secret, 2);
+  assertTrue('rng.getRng called', called);
+}
+
 function testCombineWithInsufficientPointsDoesNotGiveSecret() {
   var out = ssss.split(secret, 3, 5);
   var combined = ssss.combine([out[0], out[2]]);
