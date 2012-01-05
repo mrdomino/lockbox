@@ -19,7 +19,7 @@ rng.Rng.prototype.getRandomValues = goog.abstractMethod;
  */
 rng.getRng = function() {
   if (typeof crypto != 'undefined' &&
-      typeof crypto.getRandomValues == 'function') {
+      typeof crypto['getRandomValues'] == 'function') {
     return crypto;
   }
   // TODO: notify that we're using a potentially weak RNG.
