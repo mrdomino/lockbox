@@ -19,7 +19,7 @@ JSOUT=$(foreach mod, $(MODULES), $(mod)-compiled.js)
 
 all: $(JSOUT) deps.js
 
-%-compiled.js: %.js
+%-compiled.js: %.js externs.js
 	$(CLOSUREBUILDER) --root=$(LIBRARY_ROOT) --root=. --namespace=$* \
 		--output_mode=compiled --compiler_jar=$(COMPILER_JAR) \
 		$(foreach flag,$(COMPILER_FLAGS),--compiler_flag=$(flag)) > $@
