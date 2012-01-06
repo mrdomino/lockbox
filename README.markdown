@@ -35,7 +35,7 @@ on this project&rsquo;s [github page][].
 
 ## TODO
 
-- Improve error handling/display in app.
+- Rewrite `app.js` and `app.html` to be saner/better-tested.
 - Come up with a reasonable text representation
   for keys and implement formatting/parsing for it.
 - Provide an option for truly paranoid people to manually enter entropy.
