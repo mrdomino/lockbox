@@ -16,8 +16,9 @@ CLOSUREBUILDER=$(CLOSURE_BUILD)/closurebuilder.py
 DEPSWRITER=$(CLOSURE_BUILD)/depswriter.py
 JS=$(foreach mod, $(MODULES), $(mod).js)
 JSOUT=$(foreach mod, $(MODULES), $(mod)-compiled.js)
+JSEXTRA=alltests.js deps.js
 
-all: $(JSOUT) alltests.js deps.js
+all: $(JSOUT) $(JSEXTRA)
 
 %-compiled.js: %.js externs.js
 	$(CLOSUREBUILDER) --root=$(LIBRARY_ROOT) --root=. --namespace=$* \
@@ -37,4 +38,7 @@ app-compiled.js: ssss.js message.js
 ssss-compiled.js: comb.js gf28.js rng.js
 
 clean:
-	-rm $(JSOUT) deps.js
+	-rm $(JSOUT)
+
+distclean: clean
+	-rm $(JSEXTRA)
