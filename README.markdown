@@ -45,7 +45,8 @@ on this project&rsquo;s [github page][].
   which is compiled away by the Closure compiler.
 - Automated testing.
 - Add nicer documentation.
-- Spread it around.
+- Once it&rsquo;s passed the &ldquo;my mom can use it&rdquo; bar, spread it
+  around.
 
 ## Thanks
 
