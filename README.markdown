@@ -1,7 +1,7 @@
 # SSSS Lockbox
 
 This is a distributed lockbox based on [Shamir&rsquo;s Secret
-Sharing Scheme][ssss]. It can be used to split a message like:
+Sharing Scheme][ssss-wiki]. It can be used to split a message like:
 
     the password is foobar
 
@@ -47,9 +47,29 @@ on this project&rsquo;s [github page][].
 - Add nicer documentation.
 - Spread it around.
 
+## Thanks
 
+- The Galois Field implementation is based heavily on [James Plank&rsquo;s Fast
+  Galois Field Arithmetic Library in C/C++][galois].
+- The SSSS API is inspired by [point-at-infinity&rsquo;s ssss][ssss].
+- Seeing [Larry Leinweber&rsquo;s GF(2<sup>m</sup>) Elliptic Curve
+  Calculator][gfeccalc] got me over the initial &ldquo;waaah, I don&rsquo;t
+  want to write a Galois Field library in JavaScript&rdquo; angst.
+- [Clipperz][] demonstrated the feasibility of zero-knowledge web-apps and
+  client-side JavaScript crypto, and is one of few programs I regularly use
+  that passes the &ldquo;I have had drinks with the author&rdquo; trust-bar.
+  (Incidentally, I want this to be true for more software I use.)
+
+
+[clipperz]:         https://www.clipperz.com/                 "Clipperz"
 [closure library]:  http://code.google.com/p/closure-library  "Closure Library"
 [closure compiler]: http://code.google.com/p/closure-compiler "Closure Compiler"
+[galois]:           http://web.eecs.utk.edu/~plank/plank/papers/CS-07-593/
+    "Fast Galois Field Arithmetic Library in C/C++"
+[gfeccalc]:         http://vorlon.case.edu/~lxl106/gfeccalc.htm
+    "GF(2^m) Elliptic Curve Calculator"
 [github page]:      http://mrdomino.github.com/lockbox/       "SSSS Lockbox"
-[ssss]:             https://en.wikipedia.org/wiki/Shamir's_Secret_Sharing
+[ssss]:             http://point-at-infinity.org/ssss/
+    "ssss: Shamir's Secret Sharing Scheme"
+[ssss-wiki]:        https://en.wikipedia.org/wiki/Shamir's_Secret_Sharing
     "Shamir's Secret Sharing Scheme"
