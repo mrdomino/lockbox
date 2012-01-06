@@ -76,17 +76,15 @@ try {
   document.getElementById('err-div').style.display = 'none';
   app.run();
 } catch(e) {
+  var errmsg = typeof e.message == 'undefined' ? e : e.message;
+  if (e instanceof ReferenceError && errmsg.indexOf('app') > -1) {
+    errmsg += '. app-compiled.js may need to be built; try running make.';
+  }
   try {
-    var errdiv = document.getElementById('err-div');
-    var errmsg = typeof e.message == 'undefined' ? e : e.message;
-    if (e instanceof ReferenceError && errmsg.indexOf('app') > -1) {
-      errmsg += '. app-compiled.js may need to be built; try running make.';
-    }
-    errdiv.appendChild(document.createTextNode(errmsg));
-    errdiv.style.display = 'block';
+    app.errFunc({message: errmsg});
   } catch(e1) {
     alert('Something went really really wrong: ' + e1 +
-          '\nOriginal error: ' + e);
+          '\nOriginal error: ' + errmsg);
   }
 }
 </script>
