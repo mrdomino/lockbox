@@ -95,6 +95,9 @@ ssss.combine = function(keys, opt_k, opt_pred) {
   var k = (typeof opt_k == 'undefined') ? keys.length : opt_k;
   var pred = (typeof opt_pred == 'undefined') ? goog.functions.TRUE
                                               : opt_pred;
+  if (k > keys.length) {
+    k = keys.length;
+  }
   if (k != keys.length) {
     var c = /** @type {Array.<ssss.Key>} */ comb.combinationSuchThat(
         goog.functions.compose(pred, ssss.combine), keys, k);

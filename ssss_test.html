@@ -273,6 +273,11 @@ function testCombineWithThreshold() {
   assertFalse(sameBytes(secret_arr, ssss.combine(out, 2)));
 }
 
+function testCombineWithThresholdLargerThanNResetsToN() {
+  var out = ssss.split(secret_arr, 3);
+  assertTrue(sameBytes(secret_arr, ssss.combine(out, 4)));
+}
+
 function testCombineWithPredicate() {
   var out = ssss.split(secret_arr, 3, 4, new oneRng);
   var pred = function(arr) {
