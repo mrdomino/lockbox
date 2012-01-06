@@ -41,8 +41,6 @@ on this project&rsquo;s [github page][].
 - Provide an option for truly paranoid people to manually enter entropy.
 - Make the code work without `TypedArray` (for rhino and older browsers).
 - Use GF(2<sup>m</sup>) for larger m to allow more keys.
-- Throw errors rather than using `goog.asserts.assert`,
-  which is compiled away by the Closure compiler.
 - Automated testing.
 - Add nicer documentation.
 - Once it&rsquo;s passed the &ldquo;my mom

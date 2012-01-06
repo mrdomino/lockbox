@@ -3,7 +3,6 @@ goog.provide('ssss');
 goog.require('comb');
 goog.require('gf28');
 goog.require('goog.array');
-goog.require('goog.asserts');
 goog.require('goog.functions');
 goog.require('rng');
 
@@ -26,10 +25,10 @@ ssss.split = function(msg, k, opt_n, opt_gen) {
   var n = (typeof opt_n == 'undefined') ? k : opt_n;
   var gen = (typeof opt_gen == 'undefined') ? rng.getRng() : opt_gen;
 
-  goog.asserts.assert(k >= 2, 'Threshold must be at least 2.');
-  goog.asserts.assert(n >= k, 'Must have at least k total keys.');
-  goog.asserts.assert(n <= gf28.MASK,
-                      "Can't make more than %s distinct keys.", gf28.MASK);
+  if (k < 2) throw new Error('Threshold must be at least 2.');
+  if (n < k) throw new Error('Must have at least threshold total keys.');
+  if (n > gf28.MASK) throw new Error("Can't make more than " + gf28.MASK +
+                                     " distinct keys.");
 
   var m, view;
   if (msg instanceof ArrayBuffer) {
@@ -43,8 +42,8 @@ ssss.split = function(msg, k, opt_n, opt_gen) {
         : function(i) { return msg[i]; };
     for (var i = 0; i < m; ++i) {
       var b = ptFn(i);
-      goog.asserts.assert(gf28.isElem(b),
-                          '%s at msg[%s] is out of range.', b, i);
+      if (!gf28.isElem(b)) throw new Error(b + ' at msg[' + i +
+                                           '] is out of range.');
       view[i] = b;
     }
   }
@@ -101,11 +100,12 @@ ssss.combine = function(keys, opt_k, opt_pred) {
         goog.functions.compose(pred, ssss.combine), keys, k);
     return (c == null) ? null : ssss.combine(c);
   }
-  goog.asserts.assert(keys.length > 0, "Empty array passed.");
-  goog.asserts.assert(
-    goog.array.every(keys, function(key) {
-      return key.length == keys[0].length;
-    }), "Unequal key lengths.");
+  if (keys.length == 0) throw new Error("Can't combine nothing.");
+  if (!goog.array.every(keys, function(key) {
+        return key.length == keys[0].length;
+      })) {
+    throw new Error('Unequal key lengths.');
+  }
   var m = keys[0].length - 1;
   var ret = new Uint8Array(m);
   var pts = new Array(k);
@@ -141,7 +141,8 @@ ssss.combinePt_ = function(pts) {
     for (var j = 0; j < pts.length; ++j) {
       if (i == j) continue;
       var xj = pts[j]['x'];
-      goog.asserts.assert(xi != xj);
+      if (xi == xj) throw new Error('Keys at ' + i + ' and ' + j +
+                                    ' have the same x-coordinates.');
       prod = gf28.mul(prod, gf28.div(gf28.sub(x, xj), gf28.sub(xi, xj)));
     }
     sum = gf28.add(sum, gf28.mul(pts[i]['y'], prod));

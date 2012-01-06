@@ -109,7 +109,9 @@ gf28.mul = function(x, y) {
  */
 gf28.div = function(x, y) {
   gf28.checkArgs_(arguments);
-  goog.asserts.assert(y > 0);
+  if (y == 0) {
+    throw new Error('Divide by zero');
+  }
   gf28.init_();
   if (x == 0) {
     return 0;
@@ -124,7 +126,9 @@ gf28.div = function(x, y) {
  */
 gf28.inv = function(x) {
   gf28.checkArgs_(arguments);
-  goog.asserts.assert(x > 0);
+  if (x == 0) {
+    throw new Error('Attempted to invert zero');
+  }
   gf28.init_();
   return gf28.exp_[gf28.MASK - gf28.log_[x]];
 }
