@@ -7,11 +7,11 @@ Sharing Scheme][ssss-wiki]. It can be used to split a message like:
 
 into keys like:
 
-    AcHdSbX8yBsngpwlj/RnLL4KdWMZz/wXHCbUyIn8OrzLhX5TkGMjiSJ0KwQ=
-    Apyev24dWA0xjtEczfYxHgFNKJR/ZHmWlywlLppw7dQdu5wdqKbsvvVO9Z4=
-    A1xU7SdCKPTIiuoL8wMD+59w6DJd9vHp7iqBh2D/oAekWsInS+WpWLhYv+g=
-    BCYYTsXCZSEdlktuSfKdemLDkmezL26JnDja/7x1XgSsx0WB2DFv0EY6VLc=
-    BebSHIydFdjkknB5dwevn/z+UsGRveb25T5+Vkb6E9cVJhu7O3IqNgssHsE=
+    Ad5xdKFfyHQAYJRInVPN5DbyK7mDkxYBgkNtzxNBe1k1/6rPc7F1XT5yMys=
+    AqLbxUZGWNN/V8HG6aV4kwyglD1W3LC6tuZKILMXbwP8Tyk4cx9AC81CxcA=
+    A329qhu6KEWhsfK8xffgvhplCkHuEtLTUYVXjtMlYzW71KOec45TOZxSl5k=
+    BFqSupV0ZYCBOWvHAVQPfXgE9yjhQuHR3rEE4+67R7dzMjLLc14qpzYiNAs=
+    BYX01ciIFRZf31i9LQaXUG7BaVRZjIO4OdIZTY6JS4E0qbhtc885lWcyZlI=
 
 any k (in this case, 2) of which can be recombined to produce the
 original message. You can use this to distribute a secret among
