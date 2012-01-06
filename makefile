@@ -17,12 +17,18 @@ DEPSWRITER=$(CLOSURE_BUILD)/depswriter.py
 JS=$(foreach mod, $(MODULES), $(mod).js)
 JSOUT=$(foreach mod, $(MODULES), $(mod)-compiled.js)
 
-all: $(JSOUT) deps.js
+all: $(JSOUT) alltests.js deps.js
 
 %-compiled.js: %.js externs.js
 	$(CLOSUREBUILDER) --root=$(LIBRARY_ROOT) --root=. --namespace=$* \
 		--output_mode=compiled --compiler_jar=$(COMPILER_JAR) \
 		$(foreach flag,$(COMPILER_FLAGS),--compiler_flag=$(flag)) > $@
+
+alltests.js: *_test.html
+	echo 'var _allTests = [' >$@
+	ls |grep '_test\.html$$' | sed 's/^\(.*\)$$/"\1"/' | \
+		tr '\n' ',' | sed 's/.$$//' >>$@
+	echo '];' >>$@
 
 deps.js: $(JS)
 	$(DEPSWRITER) --root_with_prefix='. $(PREFIX)' > $@
