@@ -66,7 +66,7 @@ app.run = function() {
     if (!(k > 0)) {
       k = keys.length;
     }
-    var msg;
+    var msg = "";
     try {
       msg = message.decode(
           wrapped_combine(keys, k, function(arr) {
