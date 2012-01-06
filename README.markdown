@@ -13,7 +13,11 @@ into keys like:
     BCYYTsXCZSEdlktuSfKdemLDkmezL26JnDja/7x1XgSsx0WB2DFv0EY6VLc=
     BebSHIydFdjkknB5dwevn/z+UsGRveb25T5+Vkb6E9cVJhu7O3IqNgssHsE=
 
-that can be recombined to produce the original message.
+any k (in this case, 2) of which can be recombined to produce the original
+message. You can use this to distribute a secret among trusted friends, relying
+on them to only combine keys if some prearranged condition is met (e.g. you
+lose your password and need it, or you die and want to give them access to your
+information.)
 
 To try it out, first make sure that the following hold:
 
