@@ -36,8 +36,11 @@ on this project&rsquo;s [github page][].
 ## TODO
 
 - Rewrite `app.js` and `app.html` to be saner/better-tested.
+- Expand functionality to encode longer-form messages with substitution.
 - Come up with a reasonable text representation
   for keys and implement formatting/parsing for it.
+- Verify that the message encoding scheme H(m) + m is secure against
+  corruption and (reasonable) attack, or come up with a better one.
 - Provide an option for truly paranoid people to manually enter entropy.
 - Make the code work without `TypedArray` (for rhino and older browsers).
 - Use GF(2<sup>m</sup>) for larger m to allow more keys.
