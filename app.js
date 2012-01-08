@@ -1,5 +1,6 @@
 goog.provide('app');
 
+goog.require('ga');
 goog.require('ssss');
 goog.require('message');
 goog.require('goog.array');
@@ -34,6 +35,7 @@ app.handler_ = new goog.debug.ErrorHandler(app.errFunc);
 
 app.run = function() {
   var $ = goog.dom.getElement;
+  app.clearError();
   var wrapped_split = app.handler_.wrap(ssss.split);
   var wrapped_combine = app.handler_.wrap(ssss.combine);
   goog.events.listen($('split'), goog.events.EventType.CLICK, function(e) {

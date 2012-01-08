@@ -6,7 +6,7 @@ PREFIX=../../../lockbox
 COMPILER_FLAGS=--compilation_level=ADVANCED_OPTIMIZATIONS --warning_level=VERBOSE --output_wrapper="(function(){%output%})()" --externs=$(EXTERNS)
 
 # Don't touch these unless you're modifying the source.
-MODULES=app gf28 ssss comb message rng
+MODULES=ga app gf28 ssss comb message rng
 EXTERNS=externs.js
 
 # You should almost never have any reason to touch anything below this line. ###
@@ -34,7 +34,7 @@ alltests.js: *_test.html
 deps.js: $(JS)
 	$(DEPSWRITER) --root_with_prefix='. $(PREFIX)' > $@
 
-app-compiled.js: ssss.js message.js
+app-compiled.js: ga.js ssss.js message.js
 ssss-compiled.js: comb.js gf28.js rng.js
 
 clean:
