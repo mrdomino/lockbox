@@ -22,6 +22,9 @@ app.parseUint8Array = function(str) {
 }
 
 app.errFunc = function(e) {
+  if (typeof _gaq != 'undefined') {
+    _gaq.push(['_trackEvent', 'error', e.message]);
+  }
   var errdiv = goog.dom.getElement('err-div');
   goog.dom.setTextContent(errdiv, e.message);
   errdiv.style.display = 'block';
