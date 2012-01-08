@@ -69,15 +69,16 @@
 try {
   app.run();
 } catch(e) {
-  var errmsg = typeof e.message == 'undefined' ? e : e.message;
-  if (e instanceof ReferenceError && errmsg.indexOf('app') > -1) {
-    errmsg += '. app-compiled.js may need to be built; try running make.';
-  }
   try {
-    app.errFunc({message: errmsg});
+    app.errFunc(e);
   } catch(e1) {
-    alert('Something went really really wrong: ' + e1 +
-          '\nOriginal error: ' + errmsg);
+    try {
+      document.getElementById('err-div').appendChild(
+          document.createTextNode(e.message));
+    } finally {
+      alert('Something went really wrong. app-compiled.js may not have been ' +
+            'generated; try running make.');
+    }
   }
 }
 </script>
