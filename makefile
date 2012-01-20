@@ -3,7 +3,7 @@ LIBRARY_ROOT=../closure-library
 COMPILER_JAR=../closure-compiler/compiler.jar
 # PREFIX is relative to $(LIBRARY_ROOT)/closure
 PREFIX=../../../lockbox
-COMPILER_FLAGS=--compilation_level=ADVANCED_OPTIMIZATIONS --warning_level=VERBOSE --output_wrapper="(function(){%output%})()" --externs=$(EXTERNS)
+COMPILER_FLAGS=--compilation_level=ADVANCED_OPTIMIZATIONS --warning_level=VERBOSE --externs=$(EXTERNS)
 
 # Don't touch these unless you're modifying the source.
 MODULES=ga app gf28 ssss comb message rng
