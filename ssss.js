@@ -53,8 +53,10 @@ ssss.split = function(msg, k, opt_n, opt_gen) {
 
   var polyAt = function(x) {
     var sum = gf28.ZERO;
+    var pow = gf28.ONE;
     for (var j = 0; j < cs.length; ++j) {
-      var term = gf28.mul(cs[j], gf28.pow(x, j));
+      var term = gf28.mul(cs[j], pow);
+      pow = gf28.mul(pow, x);
       sum = gf28.add(sum, term);
     }
     return sum;
