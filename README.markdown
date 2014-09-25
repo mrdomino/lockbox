@@ -19,19 +19,11 @@ trusted friends, relying on them to only combine keys if some
 prearranged condition is met (e.g. you lose your password and need
 it, or you die and want to give them access to your information.)
 
-To try it out, first make sure that the following hold:
+## Building
 
-- `../closure-library` (relative to the checkout
-  path) points to a checkout of [Closure library][].
-- `../closure-compiler/compiler.jar` points
-  to a copy of the [Closure compiler][] jar.
-
-Then, run `make` and open `app.html` in your browser. Try
-pasting any two of the keys above into the combine textarea
-(separated by newlines) and pressing &ldquo;Combine&rdquo;.
-
-A precompiled version of `app.html` exists
-on this project&rsquo;s [github page][].
+    git submodule update --init
+    make
+    surf lockbox/app.html
 
 ## TODO
 

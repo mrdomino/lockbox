@@ -1,6 +1,6 @@
 # Edit these to match your environment.
 LIBRARY_ROOT=../closure-library
-COMPILER_DIR=../closure-compiler
+COMPILER_JAR=../closure-compiler/compiler.jar
 # PREFIX is relative to $(LIBRARY_ROOT)/closure
 PREFIX=../../../lockbox
 COMPILER_FLAGS=--compilation_level=ADVANCED_OPTIMIZATIONS --warning_level=VERBOSE --externs=$(EXTERNS)
@@ -18,24 +18,10 @@ DEPSWRITER=$(PYTHON) $(CLOSURE_BUILD)/depswriter.py
 JS=$(foreach mod, $(MODULES), $(mod).js)
 JSOUT=$(foreach mod, $(MODULES), $(mod)-compiled.js)
 JSEXTRA=alltests.js deps.js
-COMPILER_JAR=$(COMPILER_DIR)/compiler.jar
-COMPILER_ZIP=$(COMPILER_DIR)/compiler-latest.zip
-COMPILER_URL=http://dl.google.com/closure-compiler/compiler-latest.zip
 
 all: $(JSOUT) $(JSEXTRA)
 
-$(COMPILER_JAR): $(COMPILER_ZIP)
-	unzip $< -d $(COMPILER_DIR) compiler.jar
-	touch $(COMPILER_JAR)
-
-$(COMPILER_ZIP): $(COMPILER_DIR)/.created
-	curl -o $@ $(COMPILER_URL)
-
-$(COMPILER_DIR)/.created:
-	mkdir -p $$(dirname $@)
-	touch $@
-
-%-compiled.js: %.js externs.js $(COMPILER_JAR)
+%-compiled.js: %.js externs.js
 	$(CLOSUREBUILDER) --root=$(LIBRARY_ROOT) --root=. --namespace=$* \
 		--output_mode=compiled --compiler_jar=$(COMPILER_JAR) \
 		$(foreach flag,$(COMPILER_FLAGS),--compiler_flag=$(flag)) > $@
