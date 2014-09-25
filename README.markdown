@@ -23,7 +23,11 @@ it, or you die and want to give them access to your information.)
 
     git submodule update --init
     make
-    surf lockbox/app.html
+    surf index.html
+
+## Demo
+
+A demo lives at <https://mrdomino.github.io/lockbox/>.
 
 ## TODO
 
