@@ -1,7 +1,6 @@
-all:
-	( cd closure-compiler && make all )
-	( cd lockbox && make all )
-	make index.html
+CHECKSUM=sha256sum
+
+all: index.html check
 
 clean:
 	( cd lockbox && make clean )
@@ -12,5 +11,16 @@ distclean:
 
 .PHONY: all clean distclean
 
-index.html: lockbox/app-compiled.js lockbox/app.html
+recurse-all:
+	( cd closure-compiler && make all )
+	( cd lockbox && make all )
+
+check: index.sha256 index.html
+	$(CHECKSUM) -c $<
+
+#index.sha256: index.html
+#	$(CHECKSUM) $< > $@
+
+index.html: recurse-all
 	sh gen-index.sh > $@
+

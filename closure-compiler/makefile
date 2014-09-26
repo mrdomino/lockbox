@@ -5,7 +5,7 @@ CHECKSUM=sha256sum
 
 all: $(COMPILER_JAR) check
 
-check: compiler.sha256
+check: compiler.sha256 $(COMPILER_JAR)
 	$(CHECKSUM) -c $<
 
 #compiler.sha256: $(COMPILER_JAR)
