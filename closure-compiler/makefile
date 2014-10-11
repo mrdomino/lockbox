@@ -1,6 +1,7 @@
 COMPILER_JAR=compiler.jar
-COMPILER_ZIP=compiler-latest.zip
-COMPILER_URL=http://dl.google.com/closure-compiler/compiler-20140923.zip
+COMPILER_VERSION=20140923
+COMPILER_ZIP=compiler-$(COMPILER_VERSION).zip
+COMPILER_URL=http://dl.google.com/closure-compiler/$(COMPILER_ZIP)
 CHECKSUM=sha256sum
 
 all: $(COMPILER_JAR) check
