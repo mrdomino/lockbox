@@ -11,7 +11,7 @@ EXTERNS=externs.js
 
 # You should almost never have any reason to touch anything below this line. ###
 
-PYTHON=python
+PYTHON=python2
 CLOSURE_BUILD=$(LIBRARY_ROOT)/closure/bin/build
 CLOSUREBUILDER=$(PYTHON) $(CLOSURE_BUILD)/closurebuilder.py
 DEPSWRITER=$(PYTHON) $(CLOSURE_BUILD)/depswriter.py
